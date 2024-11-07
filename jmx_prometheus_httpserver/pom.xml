@@ -29,7 +29,7 @@
     </properties>
 
     <build>
-        <finalName>${project.artifactId}-${maven.compiler.target}</finalName>
+        <finalName>${project.artifactId}${prometheus.jmx.exporter.target.classifier}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

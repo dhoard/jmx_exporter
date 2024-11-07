@@ -324,6 +324,7 @@
             <properties>
                 <maven.compiler.source>8</maven.compiler.source>
                 <maven.compiler.target>8</maven.compiler.target>
+                <prometheus.jmx.exporter.target.classifier>-8</prometheus.jmx.exporter.target.classifier>
             </properties>
         </profile>
         <profile>
@@ -331,6 +332,23 @@
             <properties>
                 <maven.compiler.source>11</maven.compiler.source>
                 <maven.compiler.target>11</maven.compiler.target>
+                <prometheus.jmx.exporter.target.classifier>-11</prometheus.jmx.exporter.target.classifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>java-17</id>
+            <properties>
+                <maven.compiler.source>17</maven.compiler.source>
+                <maven.compiler.target>17</maven.compiler.target>
+                <prometheus.jmx.exporter.target.classifier>-17</prometheus.jmx.exporter.target.classifier>
+            </properties>
+        </profile>
+        <profile>
+            <id>java-21</id>
+            <properties>
+                <maven.compiler.source>21</maven.compiler.source>
+                <maven.compiler.target>21</maven.compiler.target>
+                <prometheus.jmx.exporter.target.classifier>-21</prometheus.jmx.exporter.target.classifier>
             </properties>
         </profile>
         <profile>
