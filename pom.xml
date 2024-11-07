@@ -23,11 +23,9 @@
     </licenses>
 
     <properties>
-        <!-- <maven.compiler.source>8</maven.compiler.source> -->
-        <!-- <maven.compiler.target>8</maven.compiler.target> -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <prometheus.metrics.version>1.3.2</prometheus.metrics.version>
+        <prometheus.metrics.version>1.3.3</prometheus.metrics.version>
     </properties>
 
     <scm>
@@ -324,7 +322,7 @@
             <properties>
                 <maven.compiler.source>8</maven.compiler.source>
                 <maven.compiler.target>8</maven.compiler.target>
-                <prometheus.jmx.exporter.target.classifier>-8</prometheus.jmx.exporter.target.classifier>
+                <prometheus.jmx.exporter.target.classifier/>
             </properties>
         </profile>
         <profile>
