@@ -1,0 +1,35 @@
+alibabadragonwell/dragonwell:21
+amazoncorretto:21
+amazoncorretto:22
+antublue/openlogic-openjdk:21
+azul/zulu-openjdk:21
+azul/zulu-openjdk:22
+azul/zulu-openjdk:23
+azul/prime:21
+bellsoft/liberica-openjdk-debian:21
+bellsoft/liberica-openjdk-debian:22
+bellsoft/liberica-openjdk-debian:23
+bitnami/java:21
+bitnami/java:22
+eclipse-temurin:21
+eclipse-temurin:22
+eclipse-temurin:23
+eclipse-temurin:21-alpine
+eclipse-temurin:22-alpine
+eclipse-temurin:23-alpine
+#ghcr.io/graalvm/jdk:21 Only support Java 17
+#ghcr.io/graalvm/jdk:22 Only support Java 17
+ibm-semeru-runtimes:open-21-jdk-focal
+ibm-semeru-runtimes:open-22-jdk-focal
+mcr.microsoft.com/openjdk/jdk:21-mariner
+mcr.microsoft.com/openjdk/jdk:21-mariner-cm1
+mcr.microsoft.com/openjdk/jdk:21-ubuntu
+openjdk:21
+openjdk:22
+openjdk:23
+openjdk:24
+container-registry.oracle.com/graalvm/jdk-community:23
+registry.access.redhat.com/ubi8/openjdk-21-runtime:latest
+registry.access.redhat.com/ubi9/openjdk-21-runtime:latest
+sapmachine:21
+sapmachine:22

@@ -1,0 +1,19 @@
+pipeline:
+  name: Build and test all
+  jobs:
+    - name: Build and test Java 8
+    - steps:
+      - name: Build and test Java 8
+        run: ./vpw.sh pipelines/test/complete/java8.yaml
+    - name: Build and test Java 11
+    - steps:
+        - name: Build and test Java 11
+          run: ./vpw.sh pipelines/test/complete/java11.yaml
+    - name: Build and test Java 11
+    - steps:
+        - name: Build and test Java 17
+          run: ./vpw.sh pipelines/test/complete/java17.yaml
+    - name: Build and test Java 11
+    - steps:
+        - name: Build and test Java 21
+          run: ./vpw.sh pipelines/test/complete/java21.yaml

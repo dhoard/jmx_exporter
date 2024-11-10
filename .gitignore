@@ -12,7 +12,7 @@ target/
 dependency-reduced-pom.xml
 output.txt
 pom.xml.versionsBackup
-integration_test_suite/integration_tests/src/test/resources/common/**.jar
+integration_test_suite/integration_tests/src/test/resources/configuration/*
 output.log
 stress-test.log
 test.sh

@@ -312,7 +312,7 @@
 
     <profiles>
         <profile>
-            <id>java-8</id>
+            <id>java8</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -322,21 +322,21 @@
             </properties>
         </profile>
         <profile>
-            <id>java-11</id>
+            <id>java11</id>
             <properties>
                 <maven.compiler.source>11</maven.compiler.source>
                 <maven.compiler.target>11</maven.compiler.target>
             </properties>
         </profile>
         <profile>
-            <id>java-17</id>
+            <id>java17</id>
             <properties>
                 <maven.compiler.source>17</maven.compiler.source>
                 <maven.compiler.target>17</maven.compiler.target>
             </properties>
         </profile>
         <profile>
-            <id>java-21</id>
+            <id>java21</id>
             <properties>
                 <maven.compiler.source>21</maven.compiler.source>
                 <maven.compiler.target>21</maven.compiler.target>

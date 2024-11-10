@@ -1,7 +1,0 @@
-pipeline:
-  name: Build all
-  jobs:
-    - name: Build All
-    - steps:
-      - name: Build Java 8
-        run: ./vpw.sh pipelines/full-test/build-java-8.yaml

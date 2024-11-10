@@ -1,0 +1,6 @@
+eclipse-temurin:8
+eclipse-temurin:11
+eclipse-temurin:17
+eclipse-temurin:21
+eclipse-temurin:22
+eclipse-temurin:23

@@ -44,9 +44,11 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>src/main/resources/common</directory>
+                            <directory>src/main/resources</directory>
                             <includes>
                                 <include>*.jar</include>
+                                <include>java-docker-images.txt</include>
+                                <include>prometheus-docker-images.txt</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>

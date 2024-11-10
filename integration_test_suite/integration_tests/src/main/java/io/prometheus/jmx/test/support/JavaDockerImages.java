@@ -27,25 +27,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 /** Class to implement JavaDockerImages */
 public final class JavaDockerImages {
 
-    private static final String ALL = "ALL";
+    private static final String DOCKER_IMAGES_RESOURCE = "/configuration/java-docker-images.txt";
 
-    private static final String DOCKER_IMAGES_CONFIGURATION = "java.docker.images";
-
-    private static final String SMOKE_TEST_DOCKER_IMAGES_RESOURCE =
-            "/smoke-test-java-docker-images.txt";
-
-    private static final List<String> SMOKE_TEST_DOCKER_IMAGES =
-            Collections.unmodifiableList(load(SMOKE_TEST_DOCKER_IMAGES_RESOURCE));
-
-    private static final String ALL_DOCKER_IMAGES_RESOURCE = "/java-docker-images.txt";
-
-    private static final List<String> ALL_DOCKER_IMAGE_NAMES =
-            Collections.unmodifiableList(load(ALL_DOCKER_IMAGES_RESOURCE));
+    private static List<String> DOCKER_IMAGE_NAMES;
 
     /** Constructor */
     private JavaDockerImages() {
@@ -58,23 +46,13 @@ public final class JavaDockerImages {
      * @return the List of Docker image names
      */
     public static Collection<String> names() {
-        String configurationValues =
-                System.getenv(
-                        DOCKER_IMAGES_CONFIGURATION.toUpperCase(Locale.ENGLISH).replace('.', '_'));
-
-        if (configurationValues == null || configurationValues.trim().isEmpty()) {
-            configurationValues = System.getProperty(DOCKER_IMAGES_CONFIGURATION);
+        synchronized (JavaDockerImages.class) {
+            if (DOCKER_IMAGE_NAMES == null) {
+                DOCKER_IMAGE_NAMES = Collections.unmodifiableList(load(DOCKER_IMAGES_RESOURCE));
+            }
         }
 
-        if (configurationValues == null || configurationValues.trim().isEmpty()) {
-            return SMOKE_TEST_DOCKER_IMAGES;
-        }
-
-        if (configurationValues.trim().equalsIgnoreCase(ALL)) {
-            return ALL_DOCKER_IMAGE_NAMES;
-        }
-
-        return Collections.unmodifiableList(toList(configurationValues));
+        return DOCKER_IMAGE_NAMES;
     }
 
     /**

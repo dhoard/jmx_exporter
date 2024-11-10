@@ -188,7 +188,7 @@ public class ExporterTestEnvironment implements Argument<ExporterTestEnvironment
     private GenericContainer<?> createJavaAgentApplicationContainer() {
         return new GenericContainer<>(javaDockerImage)
                 .waitingFor(Wait.forLogMessage(".*Running.*", 1))
-                .withClasspathResourceMapping("common", "/temp", BindMode.READ_ONLY)
+                .withClasspathResourceMapping("configuration", "/temp", BindMode.READ_ONLY)
                 .withClasspathResourceMapping(
                         testClass.getName().replace(".", "/") + "/JavaAgent",
                         "/temp",
@@ -229,7 +229,7 @@ public class ExporterTestEnvironment implements Argument<ExporterTestEnvironment
     private GenericContainer<?> createStandaloneApplicationContainer() {
         return new GenericContainer<>(javaDockerImage)
                 .waitingFor(Wait.forLogMessage(".*Running.*", 1))
-                .withClasspathResourceMapping("common", "/temp", BindMode.READ_ONLY)
+                .withClasspathResourceMapping("configuration", "/temp", BindMode.READ_ONLY)
                 .withClasspathResourceMapping(
                         testClass.getName().replace(".", "/") + "/Standalone",
                         "/temp",
@@ -271,7 +271,7 @@ public class ExporterTestEnvironment implements Argument<ExporterTestEnvironment
     private GenericContainer<?> createStandaloneExporterContainer() {
         return new GenericContainer<>(javaDockerImage)
                 .waitingFor(Wait.forListeningPort())
-                .withClasspathResourceMapping("common", "/temp", BindMode.READ_ONLY)
+                .withClasspathResourceMapping("configuration", "/temp", BindMode.READ_ONLY)
                 .withClasspathResourceMapping(
                         testClass.getName().replace(".", "/") + "/Standalone",
                         "/temp",
