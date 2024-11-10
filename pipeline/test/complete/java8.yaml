@@ -3,7 +3,7 @@ pipeline:
   properties:
     - name: java.version
       value: java8
-    - name: maven.profile
+    - name: maven.arguments
       value: '' # empty
     - name: build.output.directory
       value: output
@@ -32,7 +32,7 @@ pipeline:
       enabled: true
       steps:
         - name: Build
-          run: ./mvnw ${{ maven.profile }} clean package
+          run: ./mvnw ${{ maven.arguments }} clean package
     - name: Copy jars
       enabled: true
       steps:
