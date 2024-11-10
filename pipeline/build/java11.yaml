@@ -1,0 +1,31 @@
+pipeline:
+  name: Build
+  with:
+    java.version: java11
+    maven.arguments: -P java11
+    build.output.directory: output
+    javaagent.target.directory: jmx_prometheus_javaagent/target
+    httpserver.target.directory: jmx_prometheus_httpserver/target
+  jobs:
+    - name: Create output directory
+      enabled: true
+      steps:
+        - name: Create output directory
+          run: mkdir -p ${{ build.output.directory }}/${{ java.version }}
+    - name: Clean output directory
+      enabled: true
+      steps:
+        - name: Clean output directory
+          run: rm -Rf ${{ build.output.directory }}/${{ java.version }}/*
+    - name: Build
+      enabled: true
+      steps:
+        - name: Build
+          run: ./mvnw ${{ maven.arguments }} clean package
+    - name: Copy jars
+      enabled: true
+      steps:
+        - name: Copy jar
+          run: cp ${{ javaagent.target.directory }}/jmx_prometheus_javaagent*.jar ${{ build.output.directory }}/${{ java.version }}/
+        - name: Copy jar
+          run: cp ${{ httpserver.target.directory }}/jmx_prometheus_httpserver*.jar ${{ build.output.directory }}/${{ java.version }}/

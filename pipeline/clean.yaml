@@ -1,10 +1,8 @@
 pipeline:
   name: Clean
-  properties:
-    - name: build.output.directory
-      value: output
-    - name: resources.configuration.directory
-      value: integration_test_suite/integration_tests/src/test/resources/configuration
+  with:
+    build.output.directory: output
+    resources.configuration.directory: integration_test_suite/integration_tests/src/test/resources/configuration
   jobs:
     - name: Clean
       steps:

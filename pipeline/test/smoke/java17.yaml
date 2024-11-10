@@ -1,22 +1,14 @@
 pipeline:
   name: Build
-  properties:
-    - name: java.version
-      value: java17
-    - name: maven.arguments
-      value: -P java17
-    - name: build.output.directory
-      value: output
-    - name: java.agent.target.directory
-      value: jmx_prometheus_javaagent/target
-    - name: httpserver.target.directory
-      value: jmx_prometheus_httpserver/target
-    - name: example.application.target.directory
-      value: integration_test_suite/jmx_example_application/target
-    - name: integration.tests.configuration.directory
-      value: integration_test_suite/integration_tests/configuration/test/smoke
-    - name: resources.configuration.directory
-      value: integration_test_suite/integration_tests/src/test/resources/configuration
+  with:
+    java.version: java17
+    maven.arguments: -P java17
+    build.output.directory: output
+    javaagent.target.directory: jmx_prometheus_javaagent/target
+    httpserver.target.directory: jmx_prometheus_httpserver/target
+    example.application.target.directory: integration_test_suite/jmx_example_application/target
+    tests.configuration.directory: integration_test_suite/integration_tests/configuration/test/smoke
+    resources.configuration.directory: integration_test_suite/integration_tests/src/test/resources/configuration
   jobs:
     - name: Create output directory
       enabled: true
@@ -37,7 +29,7 @@ pipeline:
       enabled: true
       steps:
         - name: Copy jar
-          run: cp ${{ java.agent.target.directory }}/jmx_prometheus_javaagent*.jar ${{ build.output.directory }}/${{ java.version }}/
+          run: cp ${{ javaagent.target.directory }}/jmx_prometheus_javaagent*.jar ${{ build.output.directory }}/${{ java.version }}/
         - name: Copy jar
           run: cp ${{ httpserver.target.directory }}/jmx_prometheus_httpserver*.jar ${{ build.output.directory }}/${{ java.version }}/
     - name: Patch integration tests
@@ -60,9 +52,9 @@ pipeline:
         - name: Copy example application jar
           run: cp ${{ example.application.target.directory }}/jmx_example_application.jar ${{ resources.configuration.directory }}/
         - name: Copy Java docker images file
-          run: cp ${{ integration.tests.configuration.directory }}/java-docker-images-${{ java.version }}.txt ${{ resources.configuration.directory }}/
+          run: cp ${{ tests.configuration.directory }}/java-docker-images-${{ java.version }}.txt ${{ resources.configuration.directory }}/
         - name: Copy Prometheus docker images file
-          run: cp ${{ integration.tests.configuration.directory }}/prometheus-docker-images.txt ${{ resources.configuration.directory }}/
+          run: cp ${{ tests.configuration.directory }}/prometheus-docker-images.txt ${{ resources.configuration.directory }}/
         - name: Rename Java docker images file
           run: mv ${{ resources.configuration.directory }}/java-docker-images*-*.txt ${{ resources.configuration.directory }}/java-docker-images.txt
     - name: Run integration tests
