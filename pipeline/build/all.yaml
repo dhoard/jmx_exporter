@@ -1,0 +1,23 @@
+pipeline:
+  name: Build all
+  jobs:
+    - name: Clean
+    - steps:
+      - name: Clean
+        run: ./vpw.sh pipeline/clean.yaml
+    - name: Build test Java 8
+    - steps:
+      - name: Build and test Java 8
+        run: ./mvnw clean package
+    - name: Build Java 11
+    - steps:
+      - name: Build Java 11
+        run: ./mvnw -P java11 clean package
+    - name: Build Java 17
+    - steps:
+      - name: Build Java 17
+        run: ./mvnw -P java17 clean package
+    - name: Build Java 21
+    - steps:
+      - name: Build Java 21
+        run: ./mvnw -P java21 clean package
