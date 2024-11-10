@@ -4,20 +4,20 @@ pipeline:
     - name: Clean
     - steps:
       - name: Clean
-        run: ./vpw.sh pipeline/clean.yaml
+        run: ./vpw pipeline/clean.yaml
     - name: Build test Java 8
     - steps:
-      - name: Build and test Java 8
-        run: ./mvnw clean package
+      - name: Build Java 8
+        run: ./vpw pipeline/build/java8.yaml
     - name: Build Java 11
     - steps:
       - name: Build Java 11
-        run: ./mvnw -P java11 clean package
+        run: ./vpw pipeline/build/java11.yaml
     - name: Build Java 17
     - steps:
       - name: Build Java 17
-        run: ./mvnw -P java17 clean package
+        run: ./vpw pipeline/build/java17.yaml
     - name: Build Java 21
     - steps:
       - name: Build Java 21
-        run: ./mvnw -P java21 clean package
+        run: ./vpw pipeline/build/java21.yaml
