@@ -14,7 +14,7 @@ pipeline:
     - name: example.application.target.directory
       value: integration_test_suite/jmx_example_application/target
     - name: integration.tests.configuration.directory
-      value: integration_test_suite/integration_tests/configuration/full-test
+      value: integration_test_suite/integration_tests/configuration/test/complete
     - name: resources.configuration.directory
       value: integration_test_suite/integration_tests/src/test/resources/configuration
   jobs:
