@@ -51,7 +51,6 @@
         <module>jmx_prometheus_common</module>
         <module>jmx_prometheus_httpserver</module>
         <module>jmx_prometheus_javaagent</module>
-        <!-- <module>integration_test_suite</module> -->
     </modules>
 
     <distributionManagement>
