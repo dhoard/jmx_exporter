@@ -24,12 +24,7 @@
     </licenses>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <prometheus.metrics.version>1.3.3</prometheus.metrics.version>
-        <verifyica.version>0.6.2</verifyica.version>
+        <verifyica.version>0.7.0</verifyica.version>
     </properties>
 
     <build>
@@ -123,11 +118,6 @@
             <groupId>org.verifyica</groupId>
             <artifactId>verifyica-engine</artifactId>
             <version>${verifyica.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus.jmx</groupId>
-            <artifactId>jmx_prometheus_common</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>

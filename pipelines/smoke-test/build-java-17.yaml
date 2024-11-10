@@ -1,0 +1,58 @@
+pipeline:
+  name: Build
+  properties:
+    - name: java.version
+      value: java-17
+    - name: build.output.directory
+      value: output
+    - name: java.agent.target.directory
+      value: jmx_prometheus_javaagent/target
+    - name: httpserver.target.directory
+      value: jmx_prometheus_httpserver/target
+    - name: resources.common.directory
+      value: integration_test_suite/integration_tests/src/test/resources/common
+  jobs:
+    - name: Create output directory
+      enabled: true
+      steps:
+        - name: Create output directory
+          run: mkdir -p {{build.output.directory}}/{{java.version}}
+    - name: Create/clean Java 8 output directory
+      enabled: true
+      steps:
+        - name: Clean output directory
+          run: rm -Rf {{build.output.directory}}/{{java.version}}/*
+    - name: Build
+      enabled: true
+      steps:
+        - name: Build
+          run: ./mvnw -P {{java.version}} clean package
+    - name: Copy jars
+      enabled: true
+      steps:
+        - name: Copy jar
+          run: cp {{java.agent.target.directory}}/jmx_prometheus_javaagent*.jar {{build.output.directory}}/{{java.version}}/
+        - name: Copy jar
+          run: cp {{httpserver.target.directory}}/jmx_prometheus_httpserver*.jar {{build.output.directory}}/{{java.version}}/
+    - name: Patch integration tests
+      enabled: true
+      steps:
+        - name: Clean resources common directory
+          run: rm -Rf {{resources.common.directory}}/*
+        - name: Copy jars
+          run: cp {{build.output.directory}}/{{java.version}}/*.jar {{resources.common.directory}}/
+        - name: Delete extraneous jars
+          run: rm -Rf {{resources.common.directory}}/*-javadoc.jar
+        - name: Delete extraneous jars
+          run: rm -Rf {{resources.common.directory}}/*-sources.jar
+        - name: Rename jar
+          run: mv {{resources.common.directory}}/jmx_prometheus_javaagent*-*.jar {{resources.common.directory}}/jmx_prometheus_javaagent.jar
+        - name: Rename jar
+          run: mv {{resources.common.directory}}/jmx_prometheus_httpserver*-*.jar {{resources.common.directory}}/jmx_prometheus_httpserver.jar
+    - name: Run integration tests
+      enabled: false
+      steps:
+        - name: Run integration tests
+          enabled: true
+          working-directory: integration_test_suite
+          run: ../mvnw clean verify
