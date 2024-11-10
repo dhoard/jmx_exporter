@@ -9,7 +9,6 @@ pipeline:
     - name: Clean
       steps:
         - name: Clean build output directory
-          working-directory: ${{ build.output.directory }}
-          run: rm -Rf *
+          run: rm -Rf ${{ build.output.directory }}
         - name: Clean resources configuration directory
           run: rm -Rf ${{ resources.configuration.directory }}
