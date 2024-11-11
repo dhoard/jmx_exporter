@@ -2,18 +2,18 @@ pipeline:
   name: Build and test all
   jobs:
     - name: Build and test Java 8
-    - steps:
+      steps:
         - name: Build and test Java 8
           run: ./pipeline --no-timestamps pipelines/test/smoke/java8.yaml
     - name: Build and test Java 11
-    - steps:
+      steps:
         - name: Build and test Java 11
           run: ./pipeline --no-timestamps pipelines/test/smoke/java11.yaml
-    - name: Build and test Java 11
-    - steps:
+    - name: Build and test Java 17
+      steps:
         - name: Build and test Java 17
           run: ./pipeline --no-timestamps pipelines/test/smoke/java17.yaml
-    - name: Build and test Java 11
-    - steps:
+    - name: Build and test Java 21
+      steps:
         - name: Build and test Java 21
           run: ./pipeline --no-timestamps pipelines/test/smoke/java21.yaml

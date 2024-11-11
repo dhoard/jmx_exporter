@@ -2,22 +2,22 @@ pipeline:
   name: Build all
   jobs:
     - name: Clean
-    - steps:
+      steps:
         - name: Clean
           run: ./pipeline --no-timestamps pipelines/clean.yaml
     - name: Build test Java 8
-    - steps:
+      steps:
         - name: Build Java 8
           run: ./pipeline --no-timestamps pipelines/build/java8.yaml
     - name: Build Java 11
-    - steps:
+      steps:
         - name: Build Java 11
           run: ./pipeline --no-timestamps pipelines/build/java11.yaml
     - name: Build Java 17
-    - steps:
+      steps:
         - name: Build Java 17
           run: ./pipeline --no-timestamps pipelines/build/java17.yaml
     - name: Build Java 21
-    - steps:
+      steps:
         - name: Build Java 21
           run: ./pipeline --no-timestamps pipelines/build/java21.yaml
