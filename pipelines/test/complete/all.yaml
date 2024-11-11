@@ -4,16 +4,16 @@ pipeline:
     - name: Build and test Java 8
     - steps:
       - name: Build and test Java 8
-        run: ./pipeline pipelines/test/complete/java8.yaml
+        run: ./pipeline --no-timestamps pipelines/test/complete/java8.yaml
     - name: Build and test Java 11
     - steps:
         - name: Build and test Java 11
-          run: ./pipeline pipelines/test/complete/java11.yaml
+          run: ./pipeline --no-timestamps pipelines/test/complete/java11.yaml
     - name: Build and test Java 11
     - steps:
         - name: Build and test Java 17
-          run: ./pipeline pipelines/test/complete/java17.yaml
+          run: ./pipeline --no-timestamps pipelines/test/complete/java17.yaml
     - name: Build and test Java 11
     - steps:
         - name: Build and test Java 21
-          run: ./pipeline pipelines/test/complete/java21.yaml
+          run: ./pipeline --no-timestamps pipelines/test/complete/java21.yaml
