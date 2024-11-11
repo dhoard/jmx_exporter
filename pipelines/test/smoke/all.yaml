@@ -3,8 +3,8 @@ pipeline:
   jobs:
     - name: Build and test Java 8
     - steps:
-      - name: Build and test Java 8
-        run: ./pipeline --no-timestamps pipelines/test/smoke/java8.yaml
+        - name: Build and test Java 8
+          run: ./pipeline --no-timestamps pipelines/test/smoke/java8.yaml
     - name: Build and test Java 11
     - steps:
         - name: Build and test Java 11
