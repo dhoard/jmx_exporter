@@ -57,7 +57,7 @@ public class BasicAuthenticationPBKDF2WithHmacSHA1Test {
     private final String[] TEST_PASSWORDS =
             new String[] {VALID_PASSWORD, "Secret", "bad", "", null};
 
-    @Verifyica.ArgumentSupplier(parallelism = 4)
+    @Verifyica.ArgumentSupplier(parallelism = Integer.MAX_VALUE)
     public static Stream<ExporterTestEnvironment> arguments() {
         return ExporterTestEnvironmentFactory.createExporterTestEnvironments()
                 .filter(new PBKDF2WithHmacExporterTestEnvironmentFilter());

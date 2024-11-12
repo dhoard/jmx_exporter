@@ -50,7 +50,7 @@ import org.verifyica.api.Verifyica;
 
 public class AutoIncrementingMBeanTest {
 
-    @Verifyica.ArgumentSupplier(parallelism = 4)
+    @Verifyica.ArgumentSupplier(parallelism = Integer.MAX_VALUE)
     public static Stream<ExporterTestEnvironment> arguments() {
         return ExporterTestEnvironmentFactory.createExporterTestEnvironments();
     }

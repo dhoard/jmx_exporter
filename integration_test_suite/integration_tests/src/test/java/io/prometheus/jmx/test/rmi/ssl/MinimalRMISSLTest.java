@@ -44,7 +44,7 @@ import org.verifyica.api.Verifyica;
 
 public class MinimalRMISSLTest {
 
-    @Verifyica.ArgumentSupplier(parallelism = 4)
+    @Verifyica.ArgumentSupplier(parallelism = Integer.MAX_VALUE)
     public static Stream<ExporterTestEnvironment> arguments() {
         // Filter the arguments..
         //
