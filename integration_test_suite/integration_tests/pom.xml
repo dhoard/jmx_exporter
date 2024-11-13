@@ -24,7 +24,7 @@
     </licenses>
 
     <properties>
-        <verifyica.version>0.7.0-post</verifyica.version>
+        <verifyica.version>0.7.1</verifyica.version>
     </properties>
 
     <build>
