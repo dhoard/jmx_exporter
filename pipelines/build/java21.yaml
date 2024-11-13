@@ -1,5 +1,5 @@
 pipeline:
-  name: Build
+  name: Build Java 21
   with:
     java.version: java21
     maven.arguments: -P java21

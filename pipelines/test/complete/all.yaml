@@ -1,19 +1,19 @@
 pipeline:
-  name: Build and test all
+  name: Build and complete test
   jobs:
-    - name: Build and test Java 8
+    - name: Build and complete test Java 8
       steps:
-        - name: Build and test Java 8
-          run: ./pipeline --no-timestamps pipelines/test/complete/java8.yaml
+        - name: Build and complete test Java 8
+          run: ./pipeliner --suppress-timestamps pipelines/test/complete/java8.yaml
     - name: Build and test Java 11
       steps:
-        - name: Build and test Java 11
-          run: ./pipeline --no-timestamps pipelines/test/complete/java11.yaml
+        - name: Build and complete test Java 11
+          run: ./pipeliner --suppress-timestamps pipelines/test/complete/java11.yaml
     - name: Build and test Java 17
       steps:
-        - name: Build and test Java 17
-          run: ./pipeline --no-timestamps pipelines/test/complete/java17.yaml
+        - name: Build and complete test Java 17
+          run: ./pipeliner --suppress-timestamps pipelines/test/complete/java17.yaml
     - name: Build and test Java 21
       steps:
-        - name: Build and test Java 21
-          run: ./pipeline --no-timestamps pipelines/test/complete/java21.yaml
+        - name: Build and complete test Java 21
+          run: ./pipeliner --suppress-timestamps pipelines/test/complete/java21.yaml

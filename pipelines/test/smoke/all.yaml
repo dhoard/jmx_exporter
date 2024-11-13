@@ -1,19 +1,19 @@
 pipeline:
-  name: Build and test all
+  name: Build and smoke test all
   jobs:
-    - name: Build and test Java 8
+    - name: Build and smoke test Java 8
       steps:
         - name: Build and test Java 8
-          run: ./pipeline --no-timestamps pipelines/test/smoke/java8.yaml
-    - name: Build and test Java 11
+          run: ./pipeliner --suppress-timestamps pipelines/test/smoke/java8.yaml
+    - name: Build and smoke test Java 11
       steps:
         - name: Build and test Java 11
-          run: ./pipeline --no-timestamps pipelines/test/smoke/java11.yaml
-    - name: Build and test Java 17
+          run: ./pipeliner --suppress-timestamps pipelines/test/smoke/java11.yaml
+    - name: Build and smoke test Java 17
       steps:
         - name: Build and test Java 17
-          run: ./pipeline --no-timestamps pipelines/test/smoke/java17.yaml
-    - name: Build and test Java 21
+          run: ./pipeliner --suppress-timestamps pipelines/test/smoke/java17.yaml
+    - name: Build and smoke test Java 21
       steps:
         - name: Build and test Java 21
-          run: ./pipeline --no-timestamps pipelines/test/smoke/java21.yaml
+          run: ./pipeliner --suppress-timestamps pipelines/test/smoke/java21.yaml

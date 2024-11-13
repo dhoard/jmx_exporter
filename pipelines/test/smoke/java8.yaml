@@ -1,5 +1,5 @@
 pipeline:
-  name: Build
+  name: Build and smoke test Java 8
   with:
     java.version: java8
     maven.arguments:

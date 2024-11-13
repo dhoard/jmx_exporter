@@ -1,5 +1,5 @@
 pipeline:
-  name: Build
+  name: Build Java 8
   with:
     java.version: java8
     maven.arguments:

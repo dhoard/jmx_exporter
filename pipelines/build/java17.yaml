@@ -1,5 +1,5 @@
 pipeline:
-  name: Build
+  name: Build Java 17
   with:
     java.version: java17
     maven.arguments: -P java17
