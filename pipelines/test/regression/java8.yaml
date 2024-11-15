@@ -1,16 +1,16 @@
 pipeline:
-  name: Build & Smoke Test - Java 11
+  name: Build & Regression Test - Java 8
   with:
-    java.version: java11
-    maven.arguments: -P java11
+    java.version: java8
+    maven.arguments:
     build.output.directory: output
     java.agent.target.directory: jmx_prometheus_javaagent/target
     httpserver.target.directory: jmx_prometheus_httpserver/target
     example.application.target.directory: integration_test_suite/jmx_example_application/target
-    tests.configuration.directory: integration_test_suite/integration_tests/configuration/test/smoke
+    tests.configuration.directory: integration_test_suite/integration_tests/configuration/test/regression
     resources.configuration.directory: integration_test_suite/integration_tests/src/test/resources/configuration
   jobs:
-    - name: Build & Smoke Test - Java 11
+    - name: Build & Regression Test - Java 8
       steps:
         - name: Create output directory
           run: mkdir -p ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}

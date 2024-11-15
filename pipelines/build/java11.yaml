@@ -1,31 +1,39 @@
 pipeline:
-  name: Build Java 11
+  name: Build & Package - Java 11
   with:
     java.version: java11
     maven.arguments: -P java11
     build.output.directory: output
-    javaagent.target.directory: jmx_prometheus_javaagent/target
+    java.agent.target.directory: jmx_prometheus_javaagent/target
     httpserver.target.directory: jmx_prometheus_httpserver/target
   jobs:
-    - name: Create output directory
+    - name: Build & Package - Java 11
       enabled: true
       steps:
+        - name: Get project version
+          enabled: true
+          run: ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout | awk '{gsub(/^[ \t\r\n]+|[ \t\r\n]+$/, ""); print}' > $PROJECT_VERSION
+        - name: Echo project version
+          enabled: true
+          run: echo project version [${{ PROJECT_VERSION }}]
         - name: Create output directory
-          run: mkdir -p ${{ build.output.directory }}/${{ java.version }}
-    - name: Clean output directory
-      enabled: true
-      steps:
+          run: mkdir -p ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}
         - name: Clean output directory
-          run: rm -Rf ${{ build.output.directory }}/${{ java.version }}/*
-    - name: Build
-      enabled: true
-      steps:
+          run: rm -Rf ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}/*
         - name: Build
-          run: ./mvnw ${{ maven.arguments }} clean package
-    - name: Copy jars
-      enabled: true
-      steps:
+          run: ./mvnw ${{ INPUT_MAVEN_ARGUMENTS}} clean package
         - name: Copy jar
-          run: cp ${{ javaagent.target.directory }}/jmx_prometheus_javaagent*.jar ${{ build.output.directory }}/${{ java.version }}/
+          run: cp ${{ INPUT_JAVA_AGENT_TARGET_DIRECTORY }}/jmx_prometheus_javaagent*.jar ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}/
         - name: Copy jar
-          run: cp ${{ httpserver.target.directory }}/jmx_prometheus_httpserver*.jar ${{ build.output.directory }}/${{ java.version }}/
+          run: cp ${{ INPUT_HTTPSERVER_TARGET_DIRECTORY }}/jmx_prometheus_httpserver*.jar ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}/
+        - name: Rename jars
+          working-directory: ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}/
+          run: mmv "*${{ PROJECT_VERSION }}*" "#1${{ INPUT_JAVA_VERSION }}-${{ PROJECT_VERSION }}#2"
+        - name: Generate checksums
+          run: $PWD/scripts/generate-sha1-checksums.sh ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}/
+        - name: Create zip package
+          working-directory: ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}
+          run: zip -r jmx_prometheus_exporter-${{ INPUT_JAVA_VERSION }}-$PROJECT_VERSION.zip *
+        - name: Generate zip package checksum
+          working-directory: ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}/${{ INPUT_JAVA_VERSION }}
+          run: sha1sum jmx_prometheus_exporter-${{ INPUT_JAVA_VERSION }}-$PROJECT_VERSION.zip > jmx_prometheus_exporter-${{ INPUT_JAVA_VERSION }}-$PROJECT_VERSION.zip.sha1

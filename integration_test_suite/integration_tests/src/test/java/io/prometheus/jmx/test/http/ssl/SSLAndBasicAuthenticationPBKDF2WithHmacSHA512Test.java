@@ -100,7 +100,11 @@ public class SSLAndBasicAuthenticationPBKDF2WithHmacSHA512Test {
                 HttpRequest httpRequest =
                         HttpRequest.builder().url(url).authorization(username, password).build();
 
-                HttpResponse httpResponse = HttpClient.sendRequest(httpRequest);
+                HttpResponse httpResponse =
+                        HttpClient.sendRequest(
+                                httpRequest,
+                                HttpClient.CONNECT_TIMEOUT,
+                                HttpClient.READ_TIMEOUT * 2);
 
                 assertThat(httpResponse.statusCode()).isEqualTo(expectedStatusCode);
             }
@@ -123,7 +127,11 @@ public class SSLAndBasicAuthenticationPBKDF2WithHmacSHA512Test {
                 HttpRequest httpRequest =
                         HttpRequest.builder().url(url).authorization(username, password).build();
 
-                HttpResponse httpResponse = HttpClient.sendRequest(httpRequest);
+                HttpResponse httpResponse =
+                        HttpClient.sendRequest(
+                                httpRequest,
+                                HttpClient.CONNECT_TIMEOUT,
+                                HttpClient.READ_TIMEOUT * 2);
 
                 if (expectedStatusCode == 401) {
                     assertThat(httpResponse.statusCode()).isEqualTo(401);
@@ -156,7 +164,11 @@ public class SSLAndBasicAuthenticationPBKDF2WithHmacSHA512Test {
                                         MetricsType.OPEN_METRICS_TEXT_METRICS)
                                 .build();
 
-                HttpResponse httpResponse = HttpClient.sendRequest(httpRequest);
+                HttpResponse httpResponse =
+                        HttpClient.sendRequest(
+                                httpRequest,
+                                HttpClient.CONNECT_TIMEOUT,
+                                HttpClient.READ_TIMEOUT * 2);
 
                 if (expectedStatusCode == 401) {
                     assertThat(httpResponse.statusCode()).isEqualTo(401);
@@ -189,7 +201,11 @@ public class SSLAndBasicAuthenticationPBKDF2WithHmacSHA512Test {
                                         MetricsType.PROMETHEUS_TEXT_METRICS)
                                 .build();
 
-                HttpResponse httpResponse = HttpClient.sendRequest(httpRequest);
+                HttpResponse httpResponse =
+                        HttpClient.sendRequest(
+                                httpRequest,
+                                HttpClient.CONNECT_TIMEOUT,
+                                HttpClient.READ_TIMEOUT * 2);
 
                 if (expectedStatusCode == 401) {
                     assertThat(httpResponse.statusCode()).isEqualTo(401);
@@ -224,7 +240,11 @@ public class SSLAndBasicAuthenticationPBKDF2WithHmacSHA512Test {
                                                 + " encoding=delimited")
                                 .build();
 
-                HttpResponse httpResponse = HttpClient.sendRequest(httpRequest);
+                HttpResponse httpResponse =
+                        HttpClient.sendRequest(
+                                httpRequest,
+                                HttpClient.CONNECT_TIMEOUT,
+                                HttpClient.READ_TIMEOUT * 2);
 
                 if (expectedStatusCode == 401) {
                     assertThat(httpResponse.statusCode()).isEqualTo(401);

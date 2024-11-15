@@ -1,23 +1,18 @@
 pipeline:
-  name: Build all
+  name: Build & Package All
+  with:
+    clean.pipelines.directory: pipelines
+    build.pipelines.directory: pipelines/build
   jobs:
-    - name: Clean
+    - name: Build & Package All
       steps:
-        - name: Clean
-          run: ./pipeliner --suppress-timestamps pipelines/clean.yaml
-    - name: Build test Java 8
-      steps:
-        - name: Build Java 8
-          run: ./pipeliner --suppress-timestamps pipelines/build/java8.yaml
-    - name: Build Java 11
-      steps:
-        - name: Build Java 11
-          run: ./pipeliner --suppress-timestamps pipelines/build/java11.yaml
-    - name: Build Java 17
-      steps:
-        - name: Build Java 17
-          run: ./pipeliner --suppress-timestamps pipelines/build/java17.yaml
-    - name: Build Java 21
-      steps:
-        - name: Build Java 21
-          run: ./pipeliner --suppress-timestamps pipelines/build/java21.yaml
+        - name: Clean Output Directory
+          run: ./pipeliner --suppress-timestamps ${{ INPUT_CLEAN_PIPELINES_DIRECTORY}}/clean.yaml
+        - name: Build & Package - Java 8
+          run: ./pipeliner --suppress-timestamps ${{ INPUT_BUILD_PIPELINES_DIRECTORY}}/java8.yaml
+        - name: Build & Package - Java 11
+          run: ./pipeliner --suppress-timestamps ${{ INPUT_BUILD_PIPELINES_DIRECTORY}}/java11.yaml
+        - name: Build & Package - Java 17
+          run: ./pipeliner --suppress-timestamps ${{ INPUT_BUILD_PIPELINES_DIRECTORY}}/java17.yaml
+        - name: Build & Package - Java 21
+          run: ./pipeliner --suppress-timestamps ${{ INPUT_BUILD_PIPELINES_DIRECTORY}}/java21.yaml

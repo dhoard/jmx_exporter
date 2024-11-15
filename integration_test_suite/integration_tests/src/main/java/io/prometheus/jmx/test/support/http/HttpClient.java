@@ -35,8 +35,11 @@ import javax.net.ssl.X509TrustManager;
 /** Class to implement HttpClient */
 public class HttpClient {
 
-    private static final int CONNECT_TIMEOUT = 30000;
-    private static final int READ_TIMEOUT = 30000;
+    /** Default connect timeout */
+    public static final int CONNECT_TIMEOUT = 30000;
+
+    /** Default read timeout */
+    public static final int READ_TIMEOUT = 30000;
 
     static {
         try {
@@ -99,11 +102,25 @@ public class HttpClient {
      * @throws IOException IOException
      */
     public static HttpResponse sendRequest(HttpRequest httpRequest) throws IOException {
+        return sendRequest(httpRequest, CONNECT_TIMEOUT, READ_TIMEOUT);
+    }
+
+    /**
+     * Send an HttpRequest
+     *
+     * @param httpRequest httpRequest
+     * @param connectTimeout connectTimeout
+     * @param readTimeout readTimeout
+     * @return an HttpResponse
+     * @throws IOException IOException
+     */
+    public static HttpResponse sendRequest(
+            HttpRequest httpRequest, int connectTimeout, int readTimeout) throws IOException {
         URL url = new URL(httpRequest.url());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        connection.setConnectTimeout(CONNECT_TIMEOUT);
-        connection.setReadTimeout(READ_TIMEOUT);
+        connection.setConnectTimeout(connectTimeout);
+        connection.setReadTimeout(readTimeout);
 
         HttpRequest.Method method = httpRequest.method();
 

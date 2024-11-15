@@ -7,6 +7,6 @@ pipeline:
     - name: Clean all
       steps:
         - name: Clean build output directory
-          run: rm -Rf ${{ build.output.directory }}
+          run: rm -Rf ${{ INPUT_BUILD_OUTPUT_DIRECTORY }}
         - name: Clean resources configuration directory
-          run: rm -Rf ${{ resources.configuration.directory }}
+          run: rm -Rf ${{ INPUT_RESOURCES_CONFIGURATION_DIRECTORY }}
