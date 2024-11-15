@@ -1,7 +1,7 @@
 pipeline:
   name: Build & Regression Test
   with:
-    test.pipelines.directory: pipelines/test/smoke
+    test.pipelines.directory: pipelines/test/regression
   jobs:
     - name: Build & Regression Test - Java 8
       steps:
