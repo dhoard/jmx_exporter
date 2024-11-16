@@ -11,5 +11,5 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
           cache: maven
-      - name: Build & Smoke Test
-        run: ./pipeliner pipelines/test/smoke/all.yaml
+      - name: Build & Regression Test
+        run: ./pipeliner pipelines/test/regression/all.yaml
