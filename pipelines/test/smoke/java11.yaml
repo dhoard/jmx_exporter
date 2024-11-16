@@ -39,5 +39,5 @@ pipeline:
         - name: Copy Prometheus Docker Configuration Resources
           run: cp ${{ INPUT_INTEGRATION_TESTS_CONFIGURATION_DIRECTORY }}/prometheus-docker-images.txt ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/prometheus-docker-images.txt
         - name: Build Integration Tests
-          working-directory: integration_test_suite
-          run: ../mvnw clean verify
+          working-directory: integration_test_suite/integration_tests
+          run: ../../mvnw clean verify
