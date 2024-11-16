@@ -4,4 +4,4 @@ pipeline:
     - name: Build - Java 17
       steps:
         - name: Build - Java 17
-          run: ./mvnw -P java17 clean package
+          run: ./mvnw --batch-mode -P java17 clean package

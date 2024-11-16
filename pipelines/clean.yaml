@@ -4,4 +4,4 @@ pipeline:
     - name: Clean
       steps:
         - name: Clean
-          run: ./mvnw clean
+          run: ./mvnw --batch-mode clean

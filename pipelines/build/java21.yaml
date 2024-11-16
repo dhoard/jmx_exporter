@@ -4,4 +4,4 @@ pipeline:
     - name: Build - Java 21
       steps:
         - name: Build - Java 21
-          run: ./mvnw -P java21 clean package
+          run: ./mvnw --batch-mode -P java21 clean package

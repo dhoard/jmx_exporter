@@ -4,4 +4,4 @@ pipeline:
     - name: Build - Java 11
       steps:
         - name: Build - Java 11
-          run: ./mvnw -P java11 clean package
+          run: ./mvnw --batch-mode -P java11 clean package

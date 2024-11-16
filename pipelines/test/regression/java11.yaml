@@ -8,7 +8,7 @@ pipeline:
     - name: Build & Regression Test - Java 11
       steps:
         - name: Build
-          run: ./mvnw -P java11 clean package
+          run: ./mvnw --batch-mode -P java11 clean package
         - name: Clean Integration Tests Resources Directory
           run: rm -Rf ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
         - name: Create Integration Tests Resources Directory
@@ -31,7 +31,7 @@ pipeline:
           run: mv jmx_prometheus_httpserver*.jar jmx_prometheus_httpserver.jar
         - name: Build JMX Example Application
           working-directory: integration_test_suite/jmx_example_application
-          run: ../../mvnw clean package
+          run: ../../mvnw --batch-mode clean package
         - name: Patch Integration Tests 3
           run: cp integration_test_suite/jmx_example_application/target/jmx_example_application.jar ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/.
         - name: Copy Java Docker Configuration Resources
@@ -40,4 +40,4 @@ pipeline:
           run: cp ${{ INPUT_INTEGRATION_TESTS_CONFIGURATION_DIRECTORY }}/prometheus-docker-images.txt ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/prometheus-docker-images.txt
         - name: Build Integration Tests
           working-directory: integration_test_suite/integration_tests
-          run: ../../mvnw clean verify
+          run: ../../mvnw --batch-mode clean verify

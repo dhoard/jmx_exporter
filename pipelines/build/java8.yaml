@@ -4,4 +4,4 @@ pipeline:
     - name: Build - Java 8
       steps:
         - name: Build - Java 8
-          run: ./mvnw clean package
+          run: ./mvnw --batch-mode clean package
