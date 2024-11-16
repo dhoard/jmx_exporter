@@ -53,6 +53,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.version}${java.classifier}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

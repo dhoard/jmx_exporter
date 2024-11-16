@@ -315,6 +315,7 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <java.classifier/>
                 <maven.compiler.source>8</maven.compiler.source>
                 <maven.compiler.target>8</maven.compiler.target>
             </properties>
@@ -322,6 +323,7 @@
         <profile>
             <id>java11</id>
             <properties>
+                <java.classifier>-java11</java.classifier>
                 <maven.compiler.source>11</maven.compiler.source>
                 <maven.compiler.target>11</maven.compiler.target>
             </properties>
@@ -329,6 +331,7 @@
         <profile>
             <id>java17</id>
             <properties>
+                <java.classifier>-java17</java.classifier>
                 <maven.compiler.source>17</maven.compiler.source>
                 <maven.compiler.target>17</maven.compiler.target>
             </properties>
@@ -336,6 +339,7 @@
         <profile>
             <id>java21</id>
             <properties>
+                <java.classifier>-java21</java.classifier>
                 <maven.compiler.source>21</maven.compiler.source>
                 <maven.compiler.target>21</maven.compiler.target>
             </properties>
