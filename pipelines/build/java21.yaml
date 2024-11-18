@@ -3,5 +3,19 @@ pipeline:
   jobs:
     - name: Build - Java 21
       steps:
-        - name: Build - Java 21
-          run: ./mvnw --batch-mode -P java21 clean package
+        - name: Prepare Java 21
+          run: ./pipeliner pipelines/prepare/java21.yaml
+        - name: Build
+          run: ./mvnw --batch-mode clean package
+        - name: Create output directory
+          run: mkdir -p output/java21
+        - name: Clean output directory
+          run: rm -Rf output/java21/*
+        - name: Copy jar
+          run: cp collector/target/collector*.jar output/java21/
+        - name: Copy jar
+          run: cp jmx_prometheus_common/target/jmx_prometheus_common*.jar output/java21/
+        - name: Copy jar
+          run: cp jmx_prometheus_javaagent/target/jmx_prometheus_javaagent*.jar output/java21/
+        - name: Copy jar
+          run: cp jmx_prometheus_httpserver/target/jmx_prometheus_httpserver*.jar output/java21/             

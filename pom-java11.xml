@@ -310,20 +310,20 @@
 
     <profiles>
         <profile>
-            <id>java21</id>
+            <id>java11</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
-                <maven.compiler.source>21</maven.compiler.source>
-                <maven.compiler.target>21</maven.compiler.target>
+                <maven.compiler.source>11</maven.compiler.source>
+                <maven.compiler.target>11</maven.compiler.target>
             </properties>
         </profile>
         <profile>
             <id>release</id>
             <properties>
-                <maven.compiler.source>21</maven.compiler.source>
-                <maven.compiler.target>21</maven.compiler.target>
+                <maven.compiler.source>11</maven.compiler.source>
+                <maven.compiler.target>11</maven.compiler.target>
             </properties>
             <build>
                 <plugins>
@@ -368,4 +368,5 @@
             </build>
         </profile>
     </profiles>
+
 </project>

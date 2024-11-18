@@ -3,5 +3,19 @@ pipeline:
   jobs:
     - name: Build - Java 17
       steps:
-        - name: Build - Java 17
-          run: ./mvnw --batch-mode -P java17 clean package
+        - name: Prepare Java 17
+          run: ./pipeliner pipelines/prepare/java17.yaml
+        - name: Build
+          run: ./mvnw --batch-mode clean package
+        - name: Create output directory
+          run: mkdir -p output/java17
+        - name: Clean output directory
+          run: rm -Rf output/java17/*
+        - name: Copy jar
+          run: cp collector/target/collector*.jar output/java17/
+        - name: Copy jar
+          run: cp jmx_prometheus_common/target/jmx_prometheus_common*.jar output/java17/
+        - name: Copy jar
+          run: cp jmx_prometheus_javaagent/target/jmx_prometheus_javaagent*.jar output/java17/
+        - name: Copy jar
+          run: cp jmx_prometheus_httpserver/target/jmx_prometheus_httpserver*.jar output/java17/

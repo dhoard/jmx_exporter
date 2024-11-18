@@ -16,6 +16,7 @@
 
 package io.prometheus.jmx.test.support.http;
 
+import io.prometheus.jmx.test.support.SSLContextException;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -51,7 +52,7 @@ public class HttpClient {
             HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            throw new RuntimeException(
+            throw new SSLContextException(
                     "Failed to initialize SSL context for self-signed certificates", e);
         }
     }
@@ -64,7 +65,7 @@ public class HttpClient {
      * @throws IOException IOException
      */
     public static HttpResponse sendRequest(String url) throws IOException {
-        return HttpClient.sendRequest(HttpRequest.builder().url(url).build());
+        return sendRequest(HttpRequest.builder().url(url).build());
     }
 
     /**
@@ -78,7 +79,7 @@ public class HttpClient {
      */
     public static HttpResponse sendRequest(String url, String header, String value)
             throws IOException {
-        return HttpClient.sendRequest(HttpRequest.builder().url(url).header(header, value).build());
+        return sendRequest(HttpRequest.builder().url(url).header(header, value).build());
     }
 
     /**
@@ -91,7 +92,7 @@ public class HttpClient {
      */
     public static HttpResponse sendRequest(String url, Map<String, Collection<String>> headers)
             throws IOException {
-        return HttpClient.sendRequest(HttpRequest.builder().url(url).headers(headers).build());
+        return sendRequest(HttpRequest.builder().url(url).headers(headers).build());
     }
 
     /**

@@ -19,6 +19,7 @@ package io.prometheus.jmx.test.support;
 import static java.lang.String.format;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,9 +70,8 @@ public final class JavaDockerImages {
 
         try {
             inputStream = JavaDockerImages.class.getResourceAsStream(resource);
-
             if (inputStream == null) {
-                throw new IOException("Resource not found");
+                throw new IOException(format("Resource [%s] not found", resource));
             }
 
             bufferedReader =
@@ -82,6 +82,7 @@ public final class JavaDockerImages {
                 if (line == null) {
                     break;
                 }
+
                 if (!line.trim().isEmpty() && !line.trim().startsWith("#")) {
                     lines.add(line.trim());
                 }
@@ -89,42 +90,20 @@ public final class JavaDockerImages {
 
             return lines;
         } catch (Throwable t) {
-            throw new RuntimeException(format("Exception reading resource [%s]", resource), t);
+            throw new UncheckedIOException(format("Exception reading resource [%s]", resource), t);
         } finally {
-            if (bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (Throwable t) {
-                    // DO NOTHING
-                }
-            }
-
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (Throwable t) {
-                    // DO NOTHING
-                }
-            }
+            close(bufferedReader);
+            close(inputStream);
         }
     }
 
-    /**
-     * Method to split a String on whitespace and return a List of Strings
-     *
-     * @param string string
-     * @return a List of Strings
-     */
-    private static List<String> toList(String string) {
-        List<String> list = new ArrayList<>();
-
-        String[] strings = string.split("\\s+");
-        for (String s : strings) {
-            if (!s.trim().isEmpty()) {
-                list.add(s.trim());
+    private static void close(Closeable closeable) {
+        if (closeable != null) {
+            try {
+                closeable.close();
+            } catch (Throwable t) {
+                // DO NOTHING
             }
         }
-
-        return list;
     }
 }

@@ -8,7 +8,7 @@
         <version>1.0.1-post</version>
     </parent>
 
-    <artifactId>collector-java21</artifactId>
+    <artifactId>collector-java17</artifactId>
     <name>Prometheus JMX Exporter - Collector</name>
     <description>
         See https://github.com/prometheus/jmx_exporter/blob/master/README.md

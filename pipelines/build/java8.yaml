@@ -3,5 +3,19 @@ pipeline:
   jobs:
     - name: Build - Java 8
       steps:
-        - name: Build - Java 8
+        - name: Prepare Java 8
+          run: ./pipeliner pipelines/prepare/java8.yaml
+        - name: Build
           run: ./mvnw --batch-mode clean package
+        - name: Create output directory
+          run: mkdir -p output/java8
+        - name: Clean output directory
+          run: rm -Rf output/java8/*
+        - name: Copy jar
+          run: cp collector/target/collector*.jar output/java8/
+        - name: Copy jar
+          run: cp jmx_prometheus_common/target/jmx_prometheus_common*.jar output/java8/
+        - name: Copy jar
+          run: cp jmx_prometheus_javaagent/target/jmx_prometheus_javaagent*.jar output/java8/
+        - name: Copy jar
+          run: cp jmx_prometheus_httpserver/target/jmx_prometheus_httpserver*.jar output/java8/

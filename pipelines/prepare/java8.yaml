@@ -1,0 +1,7 @@
+pipeline:
+  name: Build - Java 8
+  jobs:
+    - name: Build - Java 8
+      steps:
+        - name: Build - Java 8
+          run: ./mvnw --batch-mode clean package

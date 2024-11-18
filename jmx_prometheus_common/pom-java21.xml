@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -8,8 +8,8 @@
         <version>1.0.1-post</version>
     </parent>
 
-    <artifactId>collector-java21</artifactId>
-    <name>Prometheus JMX Exporter - Collector</name>
+    <artifactId>jmx_prometheus_common-java21</artifactId>
+    <name>Prometheus JMX Exporter - Common</name>
     <description>
         See https://github.com/prometheus/jmx_exporter/blob/master/README.md
     </description>
@@ -27,27 +27,20 @@
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>prometheus-metrics-core</artifactId>
-            <version>${prometheus.metrics.version}</version>
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>prometheus-metrics-model</artifactId>
-            <version>${prometheus.metrics.version}</version>
         </dependency>
         <dependency>
             <groupId>io.prometheus</groupId>
-            <artifactId>prometheus-metrics-exposition-formats</artifactId>
-            <version>${prometheus.metrics.version}</version>
+            <artifactId>prometheus-metrics-exporter-httpserver</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>prometheus-metrics-instrumentation-jvm</artifactId>
-            <scope>test</scope>
+            <groupId>io.prometheus.jmx</groupId>
+            <artifactId>collector-java21</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -75,12 +68,25 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
                 <configuration>
-                    <systemPropertyVariables>
-                        <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
-                    </systemPropertyVariables>
+                    <java>
+                        <googleJavaFormat>
+                            <version>1.24.0</version>
+                            <style>AOSP</style>
+                            <reflowLongStrings>true</reflowLongStrings>
+                        </googleJavaFormat>
+                    </java>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>compile</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
