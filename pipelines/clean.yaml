@@ -3,5 +3,7 @@ pipeline:
   jobs:
     - name: Clean
       steps:
+        - name: Clean output directory
+          run: rm -Rf output
         - name: Clean
           run: ./mvnw --batch-mode clean

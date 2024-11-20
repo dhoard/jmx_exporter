@@ -8,7 +8,7 @@
         <version>1.0.1-post</version>
     </parent>
 
-    <artifactId>jmx_prometheus_javaagent</artifactId>
+    <artifactId>jmx_prometheus_javaagent-java21</artifactId>
     <name>Prometheus JMX Exporter - Java Agent</name>
     <description>
         See https://github.com/prometheus/jmx_exporter/blob/master/README.md
@@ -26,12 +26,12 @@
     <dependencies>
         <dependency>
             <groupId>io.prometheus.jmx</groupId>
-            <artifactId>collector</artifactId>
+            <artifactId>collector-java21</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.prometheus.jmx</groupId>
-            <artifactId>jmx_prometheus_common</artifactId>
+            <artifactId>jmx_prometheus_common-java21</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -53,7 +53,6 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${project.version}${java.classifier}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

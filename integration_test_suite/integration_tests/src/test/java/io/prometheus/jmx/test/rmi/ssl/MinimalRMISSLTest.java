@@ -20,6 +20,7 @@ import static io.prometheus.jmx.test.support.Assertions.assertCommonMetricsRespo
 import static io.prometheus.jmx.test.support.Assertions.assertHealthyResponse;
 import static io.prometheus.jmx.test.support.metrics.MetricAssertion.assertMetric;
 
+import io.prometheus.jmx.test.common.ExpectedBuildInfo;
 import io.prometheus.jmx.test.common.ExporterPath;
 import io.prometheus.jmx.test.common.ExporterTestEnvironment;
 import io.prometheus.jmx.test.common.ExporterTestEnvironmentFactory;
@@ -155,15 +156,14 @@ public class MinimalRMISSLTest {
         boolean isJmxExporterModeJavaAgent =
                 exporterTestEnvironment.getJmxExporterMode() == JmxExporterMode.JavaAgent;
 
-        String buildInfoName =
-                isJmxExporterModeJavaAgent
-                        ? "jmx_prometheus_javaagent"
-                        : "jmx_prometheus_httpserver";
+        String expectedBuildInfoName =
+                ExpectedBuildInfo.getExpectedBuildInfo(
+                        exporterTestEnvironment.getJmxExporterMode());
 
         assertMetric(metrics)
                 .ofType(Metric.Type.GAUGE)
                 .withName("jmx_exporter_build_info")
-                .withLabel("name", buildInfoName)
+                .withLabel("name", expectedBuildInfoName)
                 .withValue(1d)
                 .isPresent();
 

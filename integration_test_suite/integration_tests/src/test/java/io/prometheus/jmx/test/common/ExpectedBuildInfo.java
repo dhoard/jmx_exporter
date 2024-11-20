@@ -38,6 +38,9 @@ public class ExpectedBuildInfo {
                 jmxExporterMode == JmxExporterMode.JavaAgent
                         ? "jmx_prometheus_javaagent"
                         : "jmx_prometheus_httpserver";
-        return buildInfoName + "-" + ResourceLoader.load("/configuration/java-version.txt");
+
+        String javaVersion = ResourceLoader.load("/configuration/java-version.txt");
+
+        return buildInfoName + (javaVersion.isEmpty() ? "" : "-" + javaVersion);
     }
 }

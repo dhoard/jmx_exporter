@@ -3,5 +3,17 @@ pipeline:
   jobs:
     - name: Build - Java 8
       steps:
-        - name: Build - Java 8
-          run: ./mvnw --batch-mode clean package
+        - name: Patch parent pom.xml
+          run: cp pom-java8.xml pom.xml
+        - name: Patch collector pom.xml
+          working-directory: collector
+          run: cp pom-java8.xml pom.xml
+        - name: Patch jmx_prometheus_common pom.xml
+          working-directory: jmx_prometheus_common
+          run: cp pom-java8.xml pom.xml
+        - name: Patch jmx_prometheus_javaagent pom.xml
+          working-directory: jmx_prometheus_javaagent
+          run: cp pom-java8.xml pom.xml
+        - name: Patch jmx_prometheus_httpserver pom.xml
+          working-directory: jmx_prometheus_httpserver
+          run: cp pom-java8.xml pom.xml

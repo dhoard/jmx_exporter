@@ -17,5 +17,3 @@ pipeline:
         - name: Patch jmx_prometheus_httpserver pom.xml
           working-directory: jmx_prometheus_httpserver
           run: cp pom-java11.xml pom.xml
-        - name: Build - Java 11
-          run: ./mvnw --batch-mode -P java11 clean package

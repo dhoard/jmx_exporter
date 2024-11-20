@@ -8,7 +8,7 @@
         <version>1.0.1-post</version>
     </parent>
 
-    <artifactId>jmx_prometheus_httpserver</artifactId>
+    <artifactId>jmx_prometheus_httpserver-java21</artifactId>
     <name>Prometheus JMX Exporter - Http Server</name>
     <description>
         See https://github.com/prometheus/jmx_exporter/blob/master/README.md
@@ -28,8 +28,24 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>io.prometheus.jmx</groupId>
+            <artifactId>collector-java21</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus.jmx</groupId>
+            <artifactId>jmx_prometheus_common-java21</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>prometheus-metrics-instrumentation-jvm</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
-        <finalName>${project.artifactId}-${project.version}${java.classifier}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -267,22 +283,5 @@
             -->
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>io.prometheus.jmx</groupId>
-            <artifactId>collector</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus.jmx</groupId>
-            <artifactId>jmx_prometheus_common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.prometheus</groupId>
-            <artifactId>prometheus-metrics-instrumentation-jvm</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>
