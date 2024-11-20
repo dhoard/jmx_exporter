@@ -41,6 +41,5 @@ pipeline:
         - name: Create version resource file
           run: echo -n "java21" > ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/java-version.txt
         - name: Build Integration Tests
-          enabled: true
           working-directory: integration_test_suite/integration_tests
           run: ../../mvnw --batch-mode clean verify
