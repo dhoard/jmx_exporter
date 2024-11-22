@@ -6,10 +6,10 @@ pipeline:
     - name: Build & Regression Test - All
       steps:
         - name: Build & Regression Test - Java 8
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_REGRESSION_DIRECTORY }}/java8.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.regression.directory }}/java8.yaml
         - name: Build & Regression Test - Java 11
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_REGRESSION_DIRECTORY }}/java11.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.regression.directory }}/java11.yaml
         - name: Build & Regression Test - Java 17
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_REGRESSION_DIRECTORY }}/java17.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.regression.directory }}/java17.yaml
         - name: Build & Regression Test - Java 21
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_REGRESSION_DIRECTORY }}/java21.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.regression.directory }}/java21.yaml

@@ -10,36 +10,36 @@ pipeline:
         - name: Build
           run: ./pipeliner pipelines/build/java21.yaml
         - name: Clean Integration Tests Resources Directory
-          run: rm -Rf ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
+          run: rm -Rf ${{ INPUT_integration.tests.resources.configuration.directory }}
         - name: Create Integration Tests Resources Directory
-          run: mkdir ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
+          run: mkdir ${{ INPUT_integration.tests.resources.configuration.directory }}
         - name: Patch Integration Tests 1
-          run: cp jmx_prometheus_javaagent/target/jmx_prometheus_javaagent*.jar ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/.
+          run: cp jmx_prometheus_javaagent/target/jmx_prometheus_javaagent*.jar ${{ INPUT_integration.tests.resources.configuration.directory }}/.
         - name: Patch Integration Tests 2
-          run: cp jmx_prometheus_httpserver/target/jmx_prometheus_httpserver*.jar ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/.
+          run: cp jmx_prometheus_httpserver/target/jmx_prometheus_httpserver*.jar ${{ INPUT_integration.tests.resources.configuration.directory }}/.
         - name: Remove Irrelevant Javadoc Jars
-          working-directory: ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
+          working-directory: ${{ INPUT_integration.tests.resources.configuration.directory }}
           run: rm -Rf *javadoc.jar
         - name: Remove Irrelevant Source Jars
-          working-directory: ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
+          working-directory: ${{ INPUT_integration.tests.resources.configuration.directory }}
           run: rm -Rf *sources.jar
         - name: Rename Jar 2
-          working-directory: ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
+          working-directory: ${{ INPUT_integration.tests.resources.configuration.directory }}
           run: mv jmx_prometheus_javaagent*.jar jmx_prometheus_javaagent.jar
         - name: Rename Jar 2
-          working-directory: ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}
+          working-directory: ${{ INPUT_integration.tests.resources.configuration.directory }}
           run: mv jmx_prometheus_httpserver*.jar jmx_prometheus_httpserver.jar
         - name: Build JMX Example Application
           working-directory: integration_test_suite/jmx_example_application
           run: ../../mvnw --batch-mode clean package
         - name: Patch Integration Tests 3
-          run: cp integration_test_suite/jmx_example_application/target/jmx_example_application.jar ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/.
+          run: cp integration_test_suite/jmx_example_application/target/jmx_example_application.jar ${{ INPUT_integration.tests.resources.configuration.directory }}/.
         - name: Copy Java Docker Configuration Resources
-          run: cp ${{ INPUT_INTEGRATION_TESTS_CONFIGURATION_DIRECTORY }}/${{ INPUT_JAVA_DOCKER_IMAGES }} ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/java-docker-images.txt
+          run: cp ${{ INPUT_integration.tests.configuration.directory }}/${{ INPUT_java.docker.images }} ${{ INPUT_integration.tests.resources.configuration.directory }}/java-docker-images.txt
         - name: Copy Prometheus Docker Configuration Resources
-          run: cp ${{ INPUT_INTEGRATION_TESTS_CONFIGURATION_DIRECTORY }}/prometheus-docker-images.txt ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/prometheus-docker-images.txt
+          run: cp ${{ INPUT_integration.tests.configuration.directory }}/prometheus-docker-images.txt ${{ INPUT_integration.tests.resources.configuration.directory }}/prometheus-docker-images.txt
         - name: Create version resource file
-          run: echo -n "java21" > ${{ INPUT_INTEGRATION_TESTS_RESOURCES_CONFIGURATION_DIRECTORY }}/java-version.txt
+          run: echo -n "java21" > ${{ INPUT_integration.tests.resources.configuration.directory }}/java-version.txt
         - name: Build Integration Tests
           working-directory: integration_test_suite/integration_tests
           run: ../../mvnw --batch-mode clean verify

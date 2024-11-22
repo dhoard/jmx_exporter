@@ -6,10 +6,10 @@ pipeline:
     - name: Build & Smoke Test - All
       steps:
         - name: Build & Smoke Test - Java 8
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_SMOKE_DIRECTORY }}/java8.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.smoke.directory }}/java8.yaml
         - name: Build & Smoke Test - Java 11
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_SMOKE_DIRECTORY }}/java11.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.smoke.directory }}/java11.yaml
         - name: Build & Smoke Test - Java 17
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_SMOKE_DIRECTORY }}/java17.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.smoke.directory }}/java17.yaml
         - name: Build & Smoke Test - Java 21
-          run: ./pipeliner  ${{ INPUT_PIPELINES_TEST_SMOKE_DIRECTORY }}/java21.yaml
+          run: ./pipeliner ${{ INPUT_pipelines.test.smoke.directory }}/java21.yaml
