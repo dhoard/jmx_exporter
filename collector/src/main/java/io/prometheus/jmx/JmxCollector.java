@@ -239,7 +239,8 @@ public class JmxCollector implements MultiCollector {
 
         if (yamlConfiguration.containsKey("startDelaySeconds")) {
             try {
-                configuration.startDelaySeconds = (Integer) yamlConfiguration.get("startDelaySeconds");
+                configuration.startDelaySeconds =
+                        (Integer) yamlConfiguration.get("startDelaySeconds");
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(
                         "Invalid number provided for startDelaySeconds", e);
@@ -250,7 +251,10 @@ public class JmxCollector implements MultiCollector {
                 throw new IllegalArgumentException(
                         "At most one of hostPort and jmxUrl must be provided");
             }
-            configuration.jmxUrl = "service:jmx:rmi:///jndi/rmi://" + yamlConfiguration.get("hostPort") + "/jmxrmi";
+            configuration.jmxUrl =
+                    "service:jmx:rmi:///jndi/rmi://"
+                            + yamlConfiguration.get("hostPort")
+                            + "/jmxrmi";
         } else if (yamlConfiguration.containsKey("jmxUrl")) {
             configuration.jmxUrl = (String) yamlConfiguration.get("jmxUrl");
         }
@@ -268,11 +272,13 @@ public class JmxCollector implements MultiCollector {
         }
 
         if (yamlConfiguration.containsKey("lowercaseOutputName")) {
-            configuration.lowercaseOutputName = (Boolean) yamlConfiguration.get("lowercaseOutputName");
+            configuration.lowercaseOutputName =
+                    (Boolean) yamlConfiguration.get("lowercaseOutputName");
         }
 
         if (yamlConfiguration.containsKey("lowercaseOutputLabelNames")) {
-            configuration.lowercaseOutputLabelNames = (Boolean) yamlConfiguration.get("lowercaseOutputLabelNames");
+            configuration.lowercaseOutputLabelNames =
+                    (Boolean) yamlConfiguration.get("lowercaseOutputLabelNames");
         }
 
         // Default to includeObjectNames, but fall back to whitelistObjectNames for backward
@@ -372,12 +378,13 @@ public class JmxCollector implements MultiCollector {
         }
 
         configuration.rulesCache = new MatchedRulesCache(configuration.rules);
-        configuration.objectNameAttributeFilter = ObjectNameAttributeFilter.create(yamlConfiguration);
+        configuration.objectNameAttributeFilter =
+                ObjectNameAttributeFilter.create(yamlConfiguration);
 
         return configuration;
     }
 
-    private static String toSnakeAndLowerCase(String attrName) {
+    static String toSnakeAndLowerCase(String attrName) {
         if (attrName == null || attrName.isEmpty()) {
             return attrName;
         }
@@ -403,7 +410,7 @@ public class JmxCollector implements MultiCollector {
      * @param name Input string
      * @return the safe string
      */
-    private static String safeName(String name) {
+    static String safeName(String name) {
         if (name == null) {
             return null;
         }
