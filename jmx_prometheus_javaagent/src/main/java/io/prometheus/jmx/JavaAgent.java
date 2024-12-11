@@ -71,7 +71,7 @@ public class JavaAgent {
 
             new BuildInfoMetrics().register(DEFAULT_REGISTRY);
             JvmMetrics.builder().register(DEFAULT_REGISTRY);
-            new JmxCollector(file, JmxCollector.Mode.AGENT).register(DEFAULT_REGISTRY);
+            new JmxCollector(JmxCollector.Mode.AGENT, file).register(DEFAULT_REGISTRY);
 
             info("HTTP enabled [%b]", httpEnabled);
             if (httpEnabled) {

@@ -55,31 +55,6 @@ class JmxScraper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JmxScraper.class);
 
-    /** Interface to implement MBeanReceiver */
-    public interface MBeanReceiver {
-
-        /**
-         * Method to create a bean
-         *
-         * @param domain domain
-         * @param beanProperties beanProperties
-         * @param attrKeys attrKeys
-         * @param attrName attrName
-         * @param attrType attrType
-         * @param attrDescription attrDescription
-         * @param value value
-         */
-        void recordBean(
-                String domain,
-                LinkedHashMap<String, String> beanProperties,
-                LinkedList<String> attrKeys,
-                String attrName,
-                String attrType,
-                String attrDescription,
-                Object value);
-    }
-
-    private final MBeanReceiver receiver;
     private final String jmxUrl;
     private final String username;
     private final String password;
@@ -87,6 +62,7 @@ class JmxScraper {
     private final List<ObjectName> includeObjectNames, excludeObjectNames;
     private final ObjectNameAttributeFilter objectNameAttributeFilter;
     private final JmxMBeanPropertyCache jmxMBeanPropertyCache;
+    private final JmxScraperListener jmxScraperListener;
 
     /**
      * Constructor
@@ -98,8 +74,8 @@ class JmxScraper {
      * @param includeObjectNames includeObjectNames
      * @param excludeObjectNames excludeObjectNames
      * @param objectNameAttributeFilter objectNameAttributeFilter
-     * @param receiver receiver
      * @param jmxMBeanPropertyCache jmxMBeanPropertyCache
+     * @param jmxScraperListener jmxScraperListener
      */
     public JmxScraper(
             String jmxUrl,
@@ -109,10 +85,9 @@ class JmxScraper {
             List<ObjectName> includeObjectNames,
             List<ObjectName> excludeObjectNames,
             ObjectNameAttributeFilter objectNameAttributeFilter,
-            MBeanReceiver receiver,
-            JmxMBeanPropertyCache jmxMBeanPropertyCache) {
+            JmxMBeanPropertyCache jmxMBeanPropertyCache,
+            JmxScraperListener jmxScraperListener) {
         this.jmxUrl = jmxUrl;
-        this.receiver = receiver;
         this.username = username;
         this.password = password;
         this.ssl = ssl;
@@ -120,14 +95,15 @@ class JmxScraper {
         this.excludeObjectNames = excludeObjectNames;
         this.objectNameAttributeFilter = objectNameAttributeFilter;
         this.jmxMBeanPropertyCache = jmxMBeanPropertyCache;
+        this.jmxScraperListener = jmxScraperListener;
     }
 
     /**
-     * Get a list of mbeans on host_port and scrape their values.
+     * Scrape JMX MBeans
      *
-     * <p>Values are passed to the receiver in a single thread.
+     * @throws Exception Exception
      */
-    public void doScrape() throws Exception {
+    public void scrape() throws Exception {
         MBeanServerConnection beanConn;
         JMXConnector jmxc = null;
         if (jmxUrl.isEmpty()) {
@@ -351,7 +327,7 @@ class JmxScraper {
                 value = ((java.util.Date) value).getTime() / 1000.0;
             }
             LOGGER.log(FINE, "%s%s%s scrape: %s", domain, beanProperties, attrName, value);
-            this.receiver.recordBean(
+            this.jmxScraperListener.recordMBean(
                     domain, beanProperties, attrKeys, attrName, attrType, attrDescription, value);
         } else if (value instanceof CompositeData) {
             LOGGER.log(FINE, "%s%s%s scrape: compositedata", domain, beanProperties, attrName);
@@ -475,8 +451,8 @@ class JmxScraper {
         }
     }
 
-    private static class StdoutWriter implements MBeanReceiver {
-        public void recordBean(
+    private static class StdoutWriter implements JmxScraperListener {
+        public void recordMBean(
                 String domain,
                 LinkedHashMap<String, String> beanProperties,
                 LinkedList<String> attrKeys,
@@ -503,9 +479,9 @@ class JmxScraper {
                             objectNames,
                             new LinkedList<>(),
                             objectNameAttributeFilter,
-                            new StdoutWriter(),
-                            new JmxMBeanPropertyCache())
-                    .doScrape();
+                            new JmxMBeanPropertyCache(),
+                            new StdoutWriter())
+                    .scrape();
         } else if (args.length > 0) {
             new JmxScraper(
                             args[0],
@@ -515,9 +491,9 @@ class JmxScraper {
                             objectNames,
                             new LinkedList<>(),
                             objectNameAttributeFilter,
-                            new StdoutWriter(),
-                            new JmxMBeanPropertyCache())
-                    .doScrape();
+                            new JmxMBeanPropertyCache(),
+                            new StdoutWriter())
+                    .scrape();
         } else {
             new JmxScraper(
                             "",
@@ -527,9 +503,9 @@ class JmxScraper {
                             objectNames,
                             new LinkedList<>(),
                             objectNameAttributeFilter,
-                            new StdoutWriter(),
-                            new JmxMBeanPropertyCache())
-                    .doScrape();
+                            new JmxMBeanPropertyCache(),
+                            new StdoutWriter())
+                    .scrape();
         }
     }
 }

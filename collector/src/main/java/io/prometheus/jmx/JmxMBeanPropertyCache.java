@@ -29,6 +29,7 @@ import javax.management.ObjectName;
  * of it is to reduce the frequency with which we invoke PROPERTY_PATTERN when discovering mBeans.
  */
 class JmxMBeanPropertyCache {
+
     private static final Pattern PROPERTY_PATTERN =
             Pattern.compile(
                     "([^,=:\\*\\?]+)"
@@ -60,38 +61,57 @@ class JmxMBeanPropertyCache {
     // in the order they were added).
     private final Map<ObjectName, LinkedHashMap<String, String>> keyPropertiesPerBean;
 
+    /** Constructor */
     public JmxMBeanPropertyCache() {
-        this.keyPropertiesPerBean = new ConcurrentHashMap<>();
+        keyPropertiesPerBean = new ConcurrentHashMap<>();
     }
 
-    Map<ObjectName, LinkedHashMap<String, String>> getKeyPropertiesPerBean() {
-        return keyPropertiesPerBean;
-    }
+    /**
+     * Method to get a Map of properties for an ObjectName
+     *
+     * @param objectName objectName
+     * @return a Map of properties mapping to the ObjectName
+     */
+    public LinkedHashMap<String, String> getKeyPropertyList(ObjectName objectName) {
+        LinkedHashMap<String, String> keyProperties = keyPropertiesPerBean.get(objectName);
 
-    public LinkedHashMap<String, String> getKeyPropertyList(ObjectName mbeanName) {
-        LinkedHashMap<String, String> keyProperties = keyPropertiesPerBean.get(mbeanName);
         if (keyProperties == null) {
             keyProperties = new LinkedHashMap<>();
-            String properties = mbeanName.getKeyPropertyListString();
-            Matcher match = PROPERTY_PATTERN.matcher(properties);
-            while (match.lookingAt()) {
-                keyProperties.put(match.group(1), match.group(2));
-                properties = properties.substring(match.end());
-                if (properties.startsWith(",")) {
-                    properties = properties.substring(1);
+            String keyPropertyListString = objectName.getKeyPropertyListString();
+
+            Matcher matcher = PROPERTY_PATTERN.matcher(keyPropertyListString);
+            while (matcher.lookingAt()) {
+                keyProperties.put(matcher.group(1), matcher.group(2));
+                keyPropertyListString = keyPropertyListString.substring(matcher.end());
+                if (keyPropertyListString.startsWith(",")) {
+                    keyPropertyListString = keyPropertyListString.substring(1);
                 }
-                match.reset(properties);
+                matcher.reset(keyPropertyListString);
             }
-            keyPropertiesPerBean.put(mbeanName, keyProperties);
+
+            keyPropertiesPerBean.put(objectName, keyProperties);
         }
+
         return keyProperties;
     }
 
-    public void onlyKeepMBeans(Set<ObjectName> latestBeans) {
-        for (ObjectName prevName : keyPropertiesPerBean.keySet()) {
-            if (!latestBeans.contains(prevName)) {
-                keyPropertiesPerBean.remove(prevName);
-            }
-        }
+    /**
+     * Method to only keep the latest beans
+     *
+     * @param objectNames objectNames
+     */
+    public void onlyKeepMBeans(Set<ObjectName> objectNames) {
+        keyPropertiesPerBean
+                .keySet()
+                .removeIf(existingObjectName -> !objectNames.contains(existingObjectName));
+    }
+
+    /**
+     * Method to get key properties per bean
+     *
+     * @return a Map of key properties per bean
+     */
+    Map<ObjectName, LinkedHashMap<String, String>> getKeyPropertiesPerBean() {
+        return keyPropertiesPerBean;
     }
 }

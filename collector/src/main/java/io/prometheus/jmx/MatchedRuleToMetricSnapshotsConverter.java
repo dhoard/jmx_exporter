@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 /** Class to implement MatchedRuleToMetricSnapshotsConverter */
-public class MatchedRuleToMetricSnapshotsConverter {
+class MatchedRuleToMetricSnapshotsConverter {
 
     private static final Logger LOGGER =
             LoggerFactory.getLogger(MatchedRuleToMetricSnapshotsConverter.class);

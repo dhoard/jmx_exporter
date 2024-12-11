@@ -15,7 +15,7 @@ Usage:
 
 Example:
 
-  java -jar jmx_prometheus_standalone-1.0.1.jar 12345 config.yaml
+  java -jar jmx_prometheus_standalone-1.0.1.jar 12345 configuration.yaml
 
 OpenTelemetry mode
 ------------------
@@ -29,7 +29,7 @@ Usage:
 
 Example:
 
-  java -jar jmx_prometheus_standalone-1.0.1.jar config.yaml
+  java -jar jmx_prometheus_standalone-1.0.1.jar configuration.yaml
 
 Documentation
 -------------

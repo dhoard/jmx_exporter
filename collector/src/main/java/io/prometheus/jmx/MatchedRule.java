@@ -25,7 +25,7 @@ import java.util.Objects;
  * file. As rules are matched using regular expressions, caching helps prevent having to match the
  * same beans to the same list of regular expressions.
  */
-public class MatchedRule {
+class MatchedRule {
 
     final String name;
     final String matchName;

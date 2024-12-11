@@ -149,7 +149,7 @@
                 <version>3.5.2</version>
                 <configuration>
                     <systemPropertyVariables>
-                        <java.util.logging.config.file>src/test/resources/logging.properties</java.util.logging.config.file>
+                        <java.util.logging.configuration.file>src/test/resources/logging.properties</java.util.logging.configuration.file>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

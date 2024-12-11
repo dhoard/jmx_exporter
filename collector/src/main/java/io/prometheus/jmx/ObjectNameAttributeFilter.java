@@ -30,7 +30,7 @@ import javax.management.ObjectName;
 
 /** Class to implement filtering of an MBean's attributes based on the attribute's name */
 @SuppressWarnings("unchecked")
-public class ObjectNameAttributeFilter {
+class ObjectNameAttributeFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectNameAttributeFilter.class);
 

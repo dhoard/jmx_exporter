@@ -69,7 +69,7 @@ public class Standalone {
             File file = new File(arguments.getFilename());
 
             new BuildInfoMetrics().register(DEFAULT_REGISTRY);
-            new JmxCollector(file, JmxCollector.Mode.STANDALONE).register(DEFAULT_REGISTRY);
+            new JmxCollector(JmxCollector.Mode.STANDALONE, file).register(DEFAULT_REGISTRY);
 
             YamlMapAccessor yamlMapAccessor = new YamlMapAccessor().load(file);
             boolean httpEnabled = arguments.isHttpEnabled();

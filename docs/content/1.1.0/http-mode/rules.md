@@ -29,7 +29,7 @@ type              | The type of the metric, can be `GAUGE`, `COUNTER` or `UNTYPE
 Metric names and label names are sanitized. All characters other than `[a-zA-Z0-9:_]` are replaced with underscores,
 and adjacent underscores are collapsed. There's no limitations on label values or the help text.
 
-A minimal config is `{}`, which will connect to the local JVM and collect everything in the default format.
+A minimal configuration is `{}`, which will connect to the local JVM and collect everything in the default format.
 Note that the scraper always processes all mBeans, even if they're not exported.
 
  **Notes**

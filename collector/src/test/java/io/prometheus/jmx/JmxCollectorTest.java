@@ -66,79 +66,93 @@ public class JmxCollectorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testRulesMustHaveNameWithHelp() throws Exception {
-        JmxCollector jc = new JmxCollector("---\nrules:\n- help: foo");
+        new JmxCollector(JmxCollector.Mode.AGENT, "---\nrules:\n- help: foo");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testRulesMustHaveNameWithLabels() throws Exception {
-        JmxCollector jc = new JmxCollector("---\nrules:\n- labels: {}");
+        new JmxCollector(JmxCollector.Mode.AGENT, "---\nrules:\n- labels: {}");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testRulesMustHavePatternWithName() throws Exception {
-        JmxCollector jc = new JmxCollector("---\nrules:\n- name: foo");
+        new JmxCollector(JmxCollector.Mode.AGENT, "---\nrules:\n- name: foo");
     }
 
     @Test
     public void testNameIsReplacedOnMatch() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `^hadoop<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: foo"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(200, getSampleValue("foo", new String[] {}, new String[] {}), .001);
     }
 
     @Test
     public void testSnakeCaseAttrName() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `^hadoop<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replace_block_op_min_time:`\n  name: foo\n  attrNameSnakeCase: true"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(200, getSampleValue("foo", new String[] {}, new String[] {}), .001);
     }
 
     @Test
     public void testLabelsAreSet() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `^hadoop<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: foo\n  labels:\n    l: v"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(200, getSampleValue("foo", new String[] {"l"}, new String[] {"v"}), .001);
     }
 
     @Test
     public void testEmptyLabelsAreIgnored() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `^hadoop<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: foo\n  labels:\n    '': v\n    l: ''"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(200, getSampleValue("foo", new String[] {}, new String[] {}), .001);
     }
 
     @Test
     public void testLowercaseOutputName() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nlowercaseOutputName: true\nrules:\n- pattern: `^hadoop<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: Foo"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(200, getSampleValue("foo", new String[] {}, new String[] {}), .001);
     }
 
     @Test
     public void testLowercaseOutputLabelNames() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nlowercaseOutputLabelNames: true\nrules:\n- pattern: `^hadoop<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: Foo\n  labels:\n    ABC: DEF"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(200, getSampleValue("Foo", new String[] {"abc"}, new String[] {"DEF"}), .001);
     }
 
     @Test
     public void testNameAndLabelsFromPattern() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `^hadoop<(service)=(DataNode), name=DataNodeActivity-ams-hdd001-50010><>(replaceBlockOpMinTime):`\n  name: hadoop_$3\n  labels:\n    `$1`: `$2`"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(
                 200,
                 getSampleValue(
@@ -151,9 +165,11 @@ public class JmxCollectorTest {
     @Test
     public void testNameAndLabelSanitized() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `^(hadoop<service=DataNode, )name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: `$1`\n  labels:\n    `$1`: `$1`"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertEquals(
                 200,
                 getSampleValue(
@@ -166,12 +182,12 @@ public class JmxCollectorTest {
     /*
     @Test
     public void testHelpFromPattern() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
                                 "\n---\nrules:\n- pattern: `^(hadoop)<service=DataNode, name=DataNodeActivity-ams-hdd001-50010><>replaceBlockOpMinTime:`\n  name: foo\n  help: bar $1"
                                         .replace('`', '"'))
                         ;
-        for (Collector.MetricFamilySamples mfs : jc.collect()) {
+        for (Collector.MetricFamilySamples mfs : jmxCollector.collect()) {
             if (mfs.name.equals("foo") && mfs.help.equals("bar hadoop")) {
                 return;
             }
@@ -195,15 +211,17 @@ public class JmxCollectorTest {
     @Test
     public void stopsOnEmptyName() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n---\nrules:\n- pattern: `.*`\n  name: ''\n- pattern: `.*`\n  name: foo"
                                 .replace('`', '"'))
                 .register(prometheusRegistry);
+
         assertNull(getSampleValue("foo", new String[] {}, new String[] {}));
     }
 
     @Test
     public void defaultExportTest() throws Exception {
-        new JmxCollector("---").register(prometheusRegistry);
+        new JmxCollector(JmxCollector.Mode.AGENT, "---").register(prometheusRegistry);
 
         // Test JVM bean.
         assertNotNull(
@@ -241,7 +259,8 @@ public class JmxCollectorTest {
 
     @Test
     public void nestedTabularDataTest() throws Exception {
-        JmxCollector jc = new JmxCollector("---").register(prometheusRegistry);
+        new JmxCollector(JmxCollector.Mode.AGENT, "---").register(prometheusRegistry);
+
         assertEquals(
                 338,
                 getSampleValue(
@@ -253,7 +272,8 @@ public class JmxCollectorTest {
 
     @Test
     public void tabularDataCompositeKeyTest() throws Exception {
-        JmxCollector jc = new JmxCollector("---").register(prometheusRegistry);
+        new JmxCollector(JmxCollector.Mode.AGENT, "---").register(prometheusRegistry);
+
         assertEquals(
                 1,
                 getSampleValue(
@@ -273,6 +293,7 @@ public class JmxCollectorTest {
     @Test
     public void testIncludeObjectNames() throws Exception {
         new JmxCollector(
+                        JmxCollector.Mode.AGENT,
                         "\n"
                                 + "---\n"
                                 + "includeObjectNames:\n"
@@ -307,15 +328,15 @@ public class JmxCollectorTest {
 
     @Test
     public void testWhitelist() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n"
-                                        + "---\n"
-                                        + "whitelistObjectNames:\n"
-                                        + "- java.lang:*\n"
-                                        + "- java.lang:*\n"
-                                        + "- org.apache.cassandra.concurrent:*")
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n"
+                                + "---\n"
+                                + "whitelistObjectNames:\n"
+                                + "- java.lang:*\n"
+                                + "- java.lang:*\n"
+                                + "- org.apache.cassandra.concurrent:*")
+                .register(prometheusRegistry);
 
         // Test what should and shouldn't be present.
         assertNotNull(
@@ -343,16 +364,16 @@ public class JmxCollectorTest {
 
     @Test
     public void testExcludeObjectNames() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n"
-                                        + "---\n"
-                                        + "includeObjectNames:\n"
-                                        + "- java.lang:*\n"
-                                        + "- org.apache.cassandra.concurrent:*\n"
-                                        + "excludeObjectNames:\n"
-                                        + "- org.apache.cassandra.concurrent:*")
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n"
+                                + "---\n"
+                                + "includeObjectNames:\n"
+                                + "- java.lang:*\n"
+                                + "- org.apache.cassandra.concurrent:*\n"
+                                + "excludeObjectNames:\n"
+                                + "- org.apache.cassandra.concurrent:*")
+                .register(prometheusRegistry);
 
         // Test what should and shouldn't be present.
         assertNotNull(
@@ -380,16 +401,16 @@ public class JmxCollectorTest {
 
     @Test
     public void testBlacklist() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n"
-                                        + "---\n"
-                                        + "whitelistObjectNames:\n"
-                                        + "- java.lang:*\n"
-                                        + "- org.apache.cassandra.concurrent:*\n"
-                                        + "blacklistObjectNames:\n"
-                                        + "- org.apache.cassandra.concurrent:*")
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n"
+                                + "---\n"
+                                + "whitelistObjectNames:\n"
+                                + "- java.lang:*\n"
+                                + "- org.apache.cassandra.concurrent:*\n"
+                                + "blacklistObjectNames:\n"
+                                + "- org.apache.cassandra.concurrent:*")
+                .register(prometheusRegistry);
 
         // Test what should and shouldn't be present.
         assertNotNull(
@@ -417,8 +438,9 @@ public class JmxCollectorTest {
 
     @Test
     public void testDefaultExportLowercaseOutputName() throws Exception {
-        JmxCollector jc =
-                new JmxCollector("---\nlowercaseOutputName: true").register(prometheusRegistry);
+        new JmxCollector(JmxCollector.Mode.AGENT, "---\nlowercaseOutputName: true")
+                .register(prometheusRegistry);
+
         assertNotNull(
                 getSampleValue(
                         "java_lang_operatingsystem_processcputime",
@@ -428,11 +450,12 @@ public class JmxCollectorTest {
 
     @Test
     public void testServletRequestPattern() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n---\nrules:\n- pattern: 'Catalina<j2eeType=Servlet, WebModule=//([-a-zA-Z0-9+&@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&@#/%=~_|]),\n    name=([-a-zA-Z0-9+/$%~_-|!.]*), J2EEApplication=none, \nJ2EEServer=none><>RequestCount:'\n  name: tomcat_request_servlet_count\n  labels:\n    module: `$1`\n    servlet: `$2`\n  help: Tomcat servlet request count\n  type: COUNTER\n  attrNameSnakeCase: false"
-                                        .replace('`', '"'))
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n---\nrules:\n- pattern: 'Catalina<j2eeType=Servlet, WebModule=//([-a-zA-Z0-9+&@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&@#/%=~_|]),\n    name=([-a-zA-Z0-9+/$%~_-|!.]*), J2EEApplication=none, \nJ2EEServer=none><>RequestCount:'\n  name: tomcat_request_servlet_count\n  labels:\n    module: `$1`\n    servlet: `$2`\n  help: Tomcat servlet request count\n  type: COUNTER\n  attrNameSnakeCase: false"
+                                .replace('`', '"'))
+                .register(prometheusRegistry);
+
         assertEquals(
                 1.0,
                 getSampleValue(
@@ -444,7 +467,7 @@ public class JmxCollectorTest {
 
     @Test
     public void testBooleanValues() throws Exception {
-        JmxCollector jc = new JmxCollector("---").register(prometheusRegistry);
+        new JmxCollector(JmxCollector.Mode.AGENT, "---").register(prometheusRegistry);
 
         assertEquals(
                 1.0, getSampleValue("boolean_Test_True", new String[] {}, new String[] {}), .001);
@@ -454,11 +477,10 @@ public class JmxCollectorTest {
 
     @Test
     public void testValueEmpty() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value:"
-                                        .replace('`', '"'))
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value:".replace('`', '"'))
+                .register(prometheusRegistry);
         assertNull(getSampleValue("foo", new String[] {}, new String[] {}));
     }
 
@@ -467,10 +489,10 @@ public class JmxCollectorTest {
     public void testDuplicateSamples() throws Exception {
         // The following config will map all beans to Samples with name "foo" with empty labels.
         // We still expect only one "foo" Sample, because all subsequent ones should be dropped.
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector("rules:\n- pattern: \".*\"\n  name: foo");
         int numberOfSamples = 0;
-        for (MetricFamilySamples mfs : jc.collect()) {
+        for (MetricFamilySamples mfs : jmxCollector.collect()) {
             for (MetricFamilySamples.Sample sample : mfs.samples) {
                 if (sample.name.equals("foo") && sample.labelNames.isEmpty()) {
                     numberOfSamples++;
@@ -496,18 +518,19 @@ public class JmxCollectorTest {
 
     @Test
     public void testValueCaptureGroup() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n---\nrules:\n- pattern: `^hadoop<.+-500(10)>`\n  name: foo\n  value: $1"
-                                        .replace('`', '"'))
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n---\nrules:\n- pattern: `^hadoop<.+-500(10)>`\n  name: foo\n  value: $1"
+                                .replace('`', '"'))
+                .register(prometheusRegistry);
         assertEquals(10.0, getSampleValue("foo", new String[] {}, new String[] {}), .001);
     }
 
     @Test
     public void testValueIgnoreNonNumber() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
+                                JmxCollector.Mode.AGENT,
                                 "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value: a"
                                         .replace('`', '"'))
                         .register(prometheusRegistry);
@@ -517,7 +540,7 @@ public class JmxCollectorTest {
     /*
     @Test
     public void testValueFactorEmpty() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
                                 "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value: 1\n  valueFactor:"
                                         .replace('`', '"'))
@@ -529,7 +552,7 @@ public class JmxCollectorTest {
     /*
     @Test
     public void testValueFactor() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
                                 "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value: 1\n  valueFactor: 0.001"
                                         .replace('`', '"'))
@@ -540,19 +563,22 @@ public class JmxCollectorTest {
 
     @Test
     public void testEnumValue() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n---\nrules:\n- pattern: `org.bean.enum<type=StateMetrics.*>State: RUNNING`\n  name: bean_running\n  value: 1"
-                                        .replace('`', '"'))
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n---\nrules:\n- pattern: `org.bean.enum<type=StateMetrics.*>State: RUNNING`\n  name: bean_running\n  value: 1"
+                                .replace('`', '"'))
+                .register(prometheusRegistry);
+
         assertEquals(1.0, getSampleValue("bean_running", new String[] {}, new String[] {}), .001);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testDelayedStartNotReady() throws Exception {
-        JmxCollector jc =
-                new JmxCollector("---\nstartDelaySeconds: 1").register(prometheusRegistry);
+        new JmxCollector(JmxCollector.Mode.AGENT, "---\nstartDelaySeconds: 1")
+                .register(prometheusRegistry);
+
         assertNull(getSampleValue("boolean_Test_True", new String[] {}, new String[] {}));
+
         fail();
     }
 
@@ -560,9 +586,13 @@ public class JmxCollectorTest {
     public void testDelayedStartReady() throws Exception {
         // TODO register calls the collector, which is in start delay seconds, need to understand
         // how to handle
-        JmxCollector jc = new JmxCollector("---\nstartDelaySeconds: 1");
+        JmxCollector jmxCollector =
+                new JmxCollector(JmxCollector.Mode.AGENT, "---\nstartDelaySeconds: 1");
+
         Thread.sleep(2000);
-        jc.register(prometheusRegistry);
+
+        jmxCollector.register(prometheusRegistry);
+
         assertEquals(
                 1.0, getSampleValue("boolean_Test_True", new String[] {}, new String[] {}), .001);
     }
@@ -582,19 +612,22 @@ public class JmxCollectorTest {
                         + "    context: \"$1\"\n"
                         + "    route: \"$2\"\n"
                         + "    type: routes";
-        JmxCollector jc = new JmxCollector(rulePattern).register(prometheusRegistry);
+
+        new JmxCollector(JmxCollector.Mode.AGENT, rulePattern).register(prometheusRegistry);
+
         Double actual =
                 getSampleValue(
                         "org_apache_camel_LastExchangeFailureTimestamp",
                         new String[] {"context", "route", "type"},
                         new String[] {"my-camel-context", "my-route-name", "routes"});
+
         assertEquals(Camel.EXPECTED_SECONDS, actual, 0);
     }
 
     /*
     @Test
     public void testCachedBeansDisabled() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
                                 "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value: 1\n  valueFactor: 4"
                                         .replace('`', '"'))
@@ -611,7 +644,7 @@ public class JmxCollectorTest {
     /*
     @Test
     public void testCachedBeansEnabled() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
                                 "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value: 1\n  valueFactor: 4\n  cache: true"
                                         .replace('`', '"'))
@@ -626,25 +659,25 @@ public class JmxCollectorTest {
     /*
     @Test
     public void testCachedBeansEnabledRetainsHelpAcrossCollections() throws Exception {
-        JmxCollector jc =
+        JmxCollector jmxCollector =
                 new JmxCollector(
                                 "\n---\nrules:\n- pattern: `.*`\n  name: foo\n  value: 1\n  valueFactor: 4\n  cache: true\n  help: help message"
                                         .replace('`', '"'))
                         ;
-        List<MetricFamilySamples> samples = jc.collect();
+        List<MetricFamilySamples> samples = jmxCollector.collect();
         assertEquals("help message", samples.get(0).help);
-        samples = jc.collect();
+        samples = jmxCollector.collect();
         assertEquals("help message", samples.get(0).help);
     }
     */
 
     @Test
     public void testCompositeData() throws Exception {
-        JmxCollector jc =
-                new JmxCollector(
-                                "\n---\nrules:\n- pattern: `io.prometheus.jmx.test<name=PerformanceMetricsMBean><PerformanceMetrics>.*`\n  attrNameSnakeCase: true"
-                                        .replace('`', '"'))
-                        .register(prometheusRegistry);
+        new JmxCollector(
+                        JmxCollector.Mode.AGENT,
+                        "\n---\nrules:\n- pattern: `io.prometheus.jmx.test<name=PerformanceMetricsMBean><PerformanceMetrics>.*`\n  attrNameSnakeCase: true"
+                                .replace('`', '"'))
+                .register(prometheusRegistry);
 
         Double value =
                 getSampleValue(

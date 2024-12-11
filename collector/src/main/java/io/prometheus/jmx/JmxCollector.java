@@ -32,8 +32,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,101 +65,79 @@ public class JmxCollector implements MultiCollector {
         STANDALONE
     }
 
-    private final Mode mode;
-
-    static class Rule {
-        Pattern pattern;
-        String name;
-        String value;
-        Double valueFactor = 1.0;
-        String help;
-        boolean attrNameSnakeCase;
-        boolean cache = false;
-        String type = "UNKNOWN";
-        ArrayList<String> labelNames;
-        ArrayList<String> labelValues;
-    }
-
-    private static class Config {
-        Integer startDelaySeconds = 0;
-        String jmxUrl = "";
-        String username = "";
-        String password = "";
-        boolean ssl = false;
-        boolean lowercaseOutputName;
-        boolean lowercaseOutputLabelNames;
-        final List<ObjectName> includeObjectNames = new ArrayList<>();
-        final List<ObjectName> excludeObjectNames = new ArrayList<>();
-        ObjectNameAttributeFilter objectNameAttributeFilter;
-        final List<Rule> rules = new ArrayList<>();
-        long lastUpdate = 0L;
-
-        MatchedRulesCache rulesCache;
-    }
-
-    private Config config;
-    private File configFile;
+    private File file;
+    private Configuration configuration;
     private final long createTimeNanoSecs = System.nanoTime();
+    private final Mode mode;
+    private final JmxMBeanPropertyCache jmxMBeanPropertyCache = new JmxMBeanPropertyCache();
 
     private Counter configReloadSuccess;
     private Counter configReloadFailure;
     private Gauge jmxScrapeDurationSeconds;
-    private Gauge jmxScrapeError;
     private Gauge jmxScrapeCachedBeans;
-
-    private final JmxMBeanPropertyCache jmxMBeanPropertyCache = new JmxMBeanPropertyCache();
-
-    /**
-     * Constructor
-     *
-     * @param in in
-     * @throws IOException IOException
-     * @throws MalformedObjectNameException MalformedObjectNameException
-     */
-    public JmxCollector(File in) throws IOException, MalformedObjectNameException {
-        this(in, null);
-    }
+    private Gauge jmxScrapeError;
 
     /**
      * Constructor
      *
-     * @param in in
      * @param mode mode
+     * @param file file
      * @throws IOException IOException
      * @throws MalformedObjectNameException MalformedObjectNameException
      */
-    public JmxCollector(File in, Mode mode) throws IOException, MalformedObjectNameException {
-        configFile = in;
+    public JmxCollector(Mode mode, File file) throws IOException, MalformedObjectNameException {
+        this.file = file;
         this.mode = mode;
-        config = loadConfig(new Yaml().load(new FileReader(in)));
-        config.lastUpdate = configFile.lastModified();
+        this.configuration = loadConfig(new Yaml().load(new FileReader(file)));
+        this.configuration.lastUpdate = this.file.lastModified();
+
         exitOnConfigError();
     }
 
     /**
      * Constructor
      *
-     * @param yamlConfig yamlConfig
+     * @param mode mode
+     * @param filename filename
      * @throws MalformedObjectNameException MalformedObjectNameException
      */
-    public JmxCollector(String yamlConfig) throws MalformedObjectNameException {
-        config = loadConfig(new Yaml().load(yamlConfig));
-        mode = null;
+    public JmxCollector(Mode mode, String filename) throws MalformedObjectNameException {
+        this.mode = mode;
+        this.configuration = loadConfig(new Yaml().load(filename));
+
+        exitOnConfigError();
     }
 
     /**
      * Constructor
      *
+     * @param mode mode
      * @param inputStream inputStream
      * @throws MalformedObjectNameException MalformedObjectNameException
      */
-    public JmxCollector(InputStream inputStream) throws MalformedObjectNameException {
-        config = loadConfig(new Yaml().load(inputStream));
-        mode = null;
+    public JmxCollector(Mode mode, InputStream inputStream) throws MalformedObjectNameException {
+        this.mode = mode;
+
+        this.configuration =
+                loadConfig(
+                        new Yaml()
+                                .load(new InputStreamReader(inputStream, StandardCharsets.UTF_8)));
     }
 
     /**
-     * Method to register the JmxCollector
+     * Constructor
+     *
+     * @param mode mode
+     * @param reader reader
+     * @throws MalformedObjectNameException MalformedObjectNameException
+     */
+    public JmxCollector(Mode mode, Reader reader) throws MalformedObjectNameException {
+        this.mode = mode;
+        this.configuration = loadConfig(new Yaml().load(reader));
+    }
+
+    /**
+     * Method to register the JmxCollector using the default PrometheusRegistry
      *
      * @return the JmxCollector
      */
@@ -165,7 +146,7 @@ public class JmxCollector implements MultiCollector {
     }
 
     /**
-     * Method to register the JmxCollector
+     * Method to register the JmxCollector to a specific PrometheusRegistry
      *
      * @param prometheusRegistry prometheusRegistry
      * @return the JmxCollector
@@ -208,7 +189,7 @@ public class JmxCollector implements MultiCollector {
     }
 
     private void exitOnConfigError() {
-        if (mode == Mode.AGENT && !config.jmxUrl.isEmpty()) {
+        if (mode == Mode.AGENT && !configuration.jmxUrl.isEmpty()) {
             LOGGER.log(
                     SEVERE,
                     "Configuration error: When running jmx_exporter as a Java agent, you must not"
@@ -216,7 +197,8 @@ public class JmxCollector implements MultiCollector {
                         + " remote JVM.");
             System.exit(-1);
         }
-        if (mode == Mode.STANDALONE && config.jmxUrl.isEmpty()) {
+
+        if (mode == Mode.STANDALONE && configuration.jmxUrl.isEmpty()) {
             LOGGER.log(
                     SEVERE,
                     "Configuration error: When running jmx_exporter in standalone mode (using"
@@ -227,10 +209,10 @@ public class JmxCollector implements MultiCollector {
     }
 
     private void reloadConfig() {
-        try (FileReader fr = new FileReader(configFile)) {
-            Map<String, Object> newYamlConfig = new Yaml().load(fr);
-            config = loadConfig(newYamlConfig);
-            config.lastUpdate = configFile.lastModified();
+        try (FileReader fileReader = new FileReader(file)) {
+            Map<String, Object> newYamlConfiguration = new Yaml().load(fileReader);
+            configuration = loadConfig(newYamlConfiguration);
+            configuration.lastUpdate = file.lastModified();
             configReloadSuccess.inc();
         } catch (Exception e) {
             LOGGER.log(SEVERE, "Configuration reload failed: %s: ", e);
@@ -238,99 +220,97 @@ public class JmxCollector implements MultiCollector {
         }
     }
 
-    private synchronized Config getLatestConfig() {
-        if (configFile != null) {
-            long mtime = configFile.lastModified();
-            if (mtime > config.lastUpdate) {
-                LOGGER.log(FINE, "Configuration file changed, reloading...");
-                reloadConfig();
-            }
+    private synchronized Configuration getLatestConfig() {
+        if (file != null && file.lastModified() > configuration.lastUpdate) {
+            LOGGER.log(FINE, "Configuration file changed, reloading...");
+            reloadConfig();
         }
         exitOnConfigError();
-        return config;
+        return configuration;
     }
 
-    private Config loadConfig(Map<String, Object> yamlConfig) throws MalformedObjectNameException {
-        Config cfg = new Config();
-
-        if (yamlConfig == null) { // Yaml config empty, set config to empty map.
-            yamlConfig = new HashMap<>();
+    private Configuration loadConfig(Map<String, Object> yamlConfiguration)
+            throws MalformedObjectNameException {
+        if (yamlConfiguration == null) {
+            yamlConfiguration = new HashMap<>();
         }
 
-        if (yamlConfig.containsKey("startDelaySeconds")) {
+        Configuration configuration = new Configuration();
+
+        if (yamlConfiguration.containsKey("startDelaySeconds")) {
             try {
-                cfg.startDelaySeconds = (Integer) yamlConfig.get("startDelaySeconds");
+                configuration.startDelaySeconds = (Integer) yamlConfiguration.get("startDelaySeconds");
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException(
                         "Invalid number provided for startDelaySeconds", e);
             }
         }
-        if (yamlConfig.containsKey("hostPort")) {
-            if (yamlConfig.containsKey("jmxUrl")) {
+        if (yamlConfiguration.containsKey("hostPort")) {
+            if (yamlConfiguration.containsKey("jmxUrl")) {
                 throw new IllegalArgumentException(
                         "At most one of hostPort and jmxUrl must be provided");
             }
-            cfg.jmxUrl = "service:jmx:rmi:///jndi/rmi://" + yamlConfig.get("hostPort") + "/jmxrmi";
-        } else if (yamlConfig.containsKey("jmxUrl")) {
-            cfg.jmxUrl = (String) yamlConfig.get("jmxUrl");
+            configuration.jmxUrl = "service:jmx:rmi:///jndi/rmi://" + yamlConfiguration.get("hostPort") + "/jmxrmi";
+        } else if (yamlConfiguration.containsKey("jmxUrl")) {
+            configuration.jmxUrl = (String) yamlConfiguration.get("jmxUrl");
         }
 
-        if (yamlConfig.containsKey("username")) {
-            cfg.username = (String) yamlConfig.get("username");
+        if (yamlConfiguration.containsKey("username")) {
+            configuration.username = (String) yamlConfiguration.get("username");
         }
 
-        if (yamlConfig.containsKey("password")) {
-            cfg.password = (String) yamlConfig.get("password");
+        if (yamlConfiguration.containsKey("password")) {
+            configuration.password = (String) yamlConfiguration.get("password");
         }
 
-        if (yamlConfig.containsKey("ssl")) {
-            cfg.ssl = (Boolean) yamlConfig.get("ssl");
+        if (yamlConfiguration.containsKey("ssl")) {
+            configuration.ssl = (Boolean) yamlConfiguration.get("ssl");
         }
 
-        if (yamlConfig.containsKey("lowercaseOutputName")) {
-            cfg.lowercaseOutputName = (Boolean) yamlConfig.get("lowercaseOutputName");
+        if (yamlConfiguration.containsKey("lowercaseOutputName")) {
+            configuration.lowercaseOutputName = (Boolean) yamlConfiguration.get("lowercaseOutputName");
         }
 
-        if (yamlConfig.containsKey("lowercaseOutputLabelNames")) {
-            cfg.lowercaseOutputLabelNames = (Boolean) yamlConfig.get("lowercaseOutputLabelNames");
+        if (yamlConfiguration.containsKey("lowercaseOutputLabelNames")) {
+            configuration.lowercaseOutputLabelNames = (Boolean) yamlConfiguration.get("lowercaseOutputLabelNames");
         }
 
         // Default to includeObjectNames, but fall back to whitelistObjectNames for backward
         // compatibility
-        if (yamlConfig.containsKey("includeObjectNames")) {
-            List<Object> names = (List<Object>) yamlConfig.get("includeObjectNames");
+        if (yamlConfiguration.containsKey("includeObjectNames")) {
+            List<Object> names = (List<Object>) yamlConfiguration.get("includeObjectNames");
             for (Object name : names) {
-                cfg.includeObjectNames.add(new ObjectName((String) name));
+                configuration.includeObjectNames.add(new ObjectName((String) name));
             }
-        } else if (yamlConfig.containsKey("whitelistObjectNames")) {
-            List<Object> names = (List<Object>) yamlConfig.get("whitelistObjectNames");
+        } else if (yamlConfiguration.containsKey("whitelistObjectNames")) {
+            List<Object> names = (List<Object>) yamlConfiguration.get("whitelistObjectNames");
             for (Object name : names) {
-                cfg.includeObjectNames.add(new ObjectName((String) name));
+                configuration.includeObjectNames.add(new ObjectName((String) name));
             }
         } else {
-            cfg.includeObjectNames.add(null);
+            configuration.includeObjectNames.add(null);
         }
 
         // Default to excludeObjectNames, but fall back to blacklistObjectNames for backward
         // compatibility
-        if (yamlConfig.containsKey("excludeObjectNames")) {
-            List<Object> names = (List<Object>) yamlConfig.get("excludeObjectNames");
+        if (yamlConfiguration.containsKey("excludeObjectNames")) {
+            List<Object> names = (List<Object>) yamlConfiguration.get("excludeObjectNames");
             for (Object name : names) {
-                cfg.excludeObjectNames.add(new ObjectName((String) name));
+                configuration.excludeObjectNames.add(new ObjectName((String) name));
             }
-        } else if (yamlConfig.containsKey("blacklistObjectNames")) {
-            List<Object> names = (List<Object>) yamlConfig.get("blacklistObjectNames");
+        } else if (yamlConfiguration.containsKey("blacklistObjectNames")) {
+            List<Object> names = (List<Object>) yamlConfiguration.get("blacklistObjectNames");
             for (Object name : names) {
-                cfg.excludeObjectNames.add(new ObjectName((String) name));
+                configuration.excludeObjectNames.add(new ObjectName((String) name));
             }
         }
 
-        if (yamlConfig.containsKey("rules")) {
+        if (yamlConfiguration.containsKey("rules")) {
             List<Map<String, Object>> configRules =
-                    (List<Map<String, Object>>) yamlConfig.get("rules");
+                    (List<Map<String, Object>>) yamlConfiguration.get("rules");
             for (Map<String, Object> yamlRule : configRules) {
                 Rule rule = new Rule();
-                cfg.rules.add(rule);
+                configuration.rules.add(rule);
                 if (yamlRule.containsKey("pattern")) {
                     rule.pattern = Pattern.compile("^.*(?:" + yamlRule.get("pattern") + ").*$");
                 }
@@ -388,16 +368,16 @@ public class JmxCollector implements MultiCollector {
             }
         } else {
             // Default to a single default rule.
-            cfg.rules.add(new Rule());
+            configuration.rules.add(new Rule());
         }
 
-        cfg.rulesCache = new MatchedRulesCache(cfg.rules);
-        cfg.objectNameAttributeFilter = ObjectNameAttributeFilter.create(yamlConfig);
+        configuration.rulesCache = new MatchedRulesCache(configuration.rules);
+        configuration.objectNameAttributeFilter = ObjectNameAttributeFilter.create(yamlConfiguration);
 
-        return cfg;
+        return configuration;
     }
 
-    static String toSnakeAndLowerCase(String attrName) {
+    private static String toSnakeAndLowerCase(String attrName) {
         if (attrName == null || attrName.isEmpty()) {
             return attrName;
         }
@@ -423,7 +403,7 @@ public class JmxCollector implements MultiCollector {
      * @param name Input string
      * @return the safe string
      */
-    static String safeName(String name) {
+    private static String safeName(String name) {
         if (name == null) {
             return null;
         }
@@ -459,17 +439,17 @@ public class JmxCollector implements MultiCollector {
                 || (input >= '0' && input <= '9'));
     }
 
-    static class Receiver implements JmxScraper.MBeanReceiver {
+    private static class Receiver implements JmxScraperListener {
 
         final List<MatchedRule> matchedRules = new ArrayList<>();
 
-        final Config config;
-        final MatchedRulesCache.StalenessTracker stalenessTracker;
+        final Configuration configuration;
+        final StalenessTracker stalenessTracker;
 
         private static final char SEP = '_';
 
-        Receiver(Config config, MatchedRulesCache.StalenessTracker stalenessTracker) {
-            this.config = config;
+        Receiver(Configuration configuration, StalenessTracker stalenessTracker) {
+            this.configuration = configuration;
             this.stalenessTracker = stalenessTracker;
         }
 
@@ -483,7 +463,7 @@ public class JmxCollector implements MultiCollector {
         private void addToCache(
                 final Rule rule, final String cacheKey, final MatchedRule matchedRule) {
             if (rule.cache) {
-                config.rulesCache.put(rule, cacheKey, matchedRule);
+                configuration.rulesCache.put(rule, cacheKey, matchedRule);
                 stalenessTracker.add(rule, cacheKey);
             }
         }
@@ -512,7 +492,7 @@ public class JmxCollector implements MultiCollector {
             name.append(attrName);
             String fullname = safeName(name.toString());
 
-            if (config.lowercaseOutputName) {
+            if (configuration.lowercaseOutputName) {
                 fullname = fullname.toLowerCase();
             }
 
@@ -525,7 +505,7 @@ public class JmxCollector implements MultiCollector {
                 while (iter.hasNext()) {
                     Map.Entry<String, String> entry = iter.next();
                     String labelName = safeName(entry.getKey());
-                    if (config.lowercaseOutputLabelNames) {
+                    if (configuration.lowercaseOutputLabelNames) {
                         labelName = labelName.toLowerCase();
                     }
                     labelNames.add(labelName);
@@ -537,7 +517,7 @@ public class JmxCollector implements MultiCollector {
                     fullname, matchName, type, help, labelNames, labelValues, value, valueFactor);
         }
 
-        public void recordBean(
+        public void recordMBean(
                 String domain,
                 LinkedHashMap<String, String> beanProperties,
                 LinkedList<String> attrKeys,
@@ -567,7 +547,7 @@ public class JmxCollector implements MultiCollector {
 
             MatchedRule matchedRule = MatchedRule.unmatched();
 
-            for (Rule rule : config.rules) {
+            for (Rule rule : configuration.rules) {
                 // Rules with bean values cannot be properly cached (only the value from the first
                 // scrape will be cached).
                 // If caching for the rule is enabled, replace the value with a dummy <cache> to
@@ -584,7 +564,7 @@ public class JmxCollector implements MultiCollector {
                 String matchName = beanName + attributeName + ": " + matchBeanValue;
 
                 if (rule.cache) {
-                    MatchedRule cachedRule = config.rulesCache.get(rule, matchName);
+                    MatchedRule cachedRule = configuration.rulesCache.get(rule, matchName);
                     if (cachedRule != null) {
                         stalenessTracker.add(rule, matchName);
                         if (cachedRule.isMatched()) {
@@ -647,7 +627,7 @@ public class JmxCollector implements MultiCollector {
                 if (name.isEmpty()) {
                     return;
                 }
-                if (config.lowercaseOutputName) {
+                if (configuration.lowercaseOutputName) {
                     name = name.toLowerCase();
                 }
 
@@ -666,7 +646,7 @@ public class JmxCollector implements MultiCollector {
                         try {
                             String labelName = safeName(matcher.replaceAll(unsafeLabelName));
                             String labelValue = matcher.replaceAll(labelValReplacement);
-                            if (config.lowercaseOutputLabelNames) {
+                            if (configuration.lowercaseOutputLabelNames) {
                                 labelName = labelName.toLowerCase();
                             }
                             if (!labelName.isEmpty() && !labelValue.isEmpty()) {
@@ -737,34 +717,33 @@ public class JmxCollector implements MultiCollector {
     public MetricSnapshots collect() {
         // Take a reference to the current config and collect with this one
         // (to avoid race conditions in case another thread reloads the config in the meantime)
-        Config config = getLatestConfig();
+        Configuration configuration = getLatestConfig();
 
-        MatchedRulesCache.StalenessTracker stalenessTracker =
-                new MatchedRulesCache.StalenessTracker();
+        StalenessTracker stalenessTracker = new StalenessTracker();
 
-        Receiver receiver = new Receiver(config, stalenessTracker);
+        Receiver receiver = new Receiver(configuration, stalenessTracker);
 
         JmxScraper scraper =
                 new JmxScraper(
-                        config.jmxUrl,
-                        config.username,
-                        config.password,
-                        config.ssl,
-                        config.includeObjectNames,
-                        config.excludeObjectNames,
-                        config.objectNameAttributeFilter,
-                        receiver,
-                        jmxMBeanPropertyCache);
+                        configuration.jmxUrl,
+                        configuration.username,
+                        configuration.password,
+                        configuration.ssl,
+                        configuration.includeObjectNames,
+                        configuration.excludeObjectNames,
+                        configuration.objectNameAttributeFilter,
+                        jmxMBeanPropertyCache,
+                        receiver);
 
         long start = System.nanoTime();
         double error = 0;
 
-        if ((config.startDelaySeconds > 0)
-                && ((start - createTimeNanoSecs) / 1000000000L < config.startDelaySeconds)) {
+        if ((configuration.startDelaySeconds > 0)
+                && ((start - createTimeNanoSecs) / 1000000000L < configuration.startDelaySeconds)) {
             throw new IllegalStateException("JMXCollector waiting for startDelaySeconds");
         }
         try {
-            scraper.doScrape();
+            scraper.scrape();
         } catch (Exception e) {
             error = 1;
             StringWriter sw = new StringWriter();
@@ -772,7 +751,7 @@ public class JmxCollector implements MultiCollector {
             LOGGER.log(SEVERE, "JMX scrape failed: %s", sw);
         }
 
-        config.rulesCache.evictStaleEntries(stalenessTracker);
+        configuration.rulesCache.evictStaleEntries(stalenessTracker);
 
         jmxScrapeDurationSeconds.set((System.nanoTime() - start) / 1.0E9);
         jmxScrapeError.set(error);
