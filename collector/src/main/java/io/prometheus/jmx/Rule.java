@@ -22,6 +22,11 @@ import java.util.regex.Pattern;
 /** Class to implement Rule */
 public class Rule {
 
+    /** Constructor */
+    public Rule() {
+        // INTENTIONALLY BLANK
+    }
+
     Pattern pattern;
     String name;
     String value;
