@@ -16,18 +16,15 @@
 
 package io.prometheus.jmx.common.yaml;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
 @SuppressWarnings("unchecked")
@@ -38,103 +35,97 @@ public class YamlMapAccessorTest {
         YamlMapAccessor yamlMapAccessor = createYamlMapAccessor("/YamlMapAccessorTest.yaml");
 
         Optional<Object> optional = yamlMapAccessor.get("/");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
 
         optional = yamlMapAccessor.get("/httpServer");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
 
         optional = yamlMapAccessor.get("/httpServer/authentication");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
 
         optional = yamlMapAccessor.get("/httpServer/authentication/basic");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
 
         optional = yamlMapAccessor.get("/httpServer/authentication/basic/username");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof String);
-        assertEquals("Prometheus", optional.get());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(String.class);
+        assertThat(optional.get()).isEqualTo("Prometheus");
 
         optional = yamlMapAccessor.get("/httpServer/authentication/basic/password");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof String);
-        assertEquals(
-                "c6d52fc2733af33e62b45d4525261e35e04f7b0ec227e4feee8fd3fe1401a2a9", optional.get());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(String.class);
+        assertThat(optional.get())
+                .isEqualTo("c6d52fc2733af33e62b45d4525261e35e04f7b0ec227e4feee8fd3fe1401a2a9");
 
         optional = yamlMapAccessor.get("/httpServer/threads");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
 
         optional = yamlMapAccessor.get("/httpServer/threads/minimum");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(1, ((Integer) optional.get()).intValue());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Integer.class);
+        assertThat(optional.get()).isEqualTo(1);
 
         optional = yamlMapAccessor.get("/httpServer/threads/maximum");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(10, ((Integer) optional.get()).intValue());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Integer.class);
+        assertThat(optional.get()).isEqualTo(10);
 
         optional = yamlMapAccessor.get("/httpServer/threads/keepAlive");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(120, ((Integer) optional.get()).intValue());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional).isPresent();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Integer.class);
+        assertThat(optional.get()).isEqualTo(120);
     }
 
     @Test
     public void testInvalidPaths() throws IOException {
         YamlMapAccessor yamlMapAccessor = createYamlMapAccessor("/YamlMapAccessorTest.yaml");
 
-        try {
-            yamlMapAccessor.get("");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // INTENTIONALLY BLANK
-        }
+        assertThatThrownBy(() -> yamlMapAccessor.get(""))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        try {
-            yamlMapAccessor.get("//");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // INTENTIONALLY BLANK
-        }
+        assertThatThrownBy(() -> yamlMapAccessor.get("//"))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        try {
-            yamlMapAccessor.get("foo");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // INTENTIONALLY BLANK
-        }
+        assertThatThrownBy(() -> yamlMapAccessor.get("foo"))
+                .isInstanceOf(IllegalArgumentException.class);
 
-        try {
-            yamlMapAccessor.get("/foo/");
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // INTENTIONALLY BLANK
-        }
+        assertThatThrownBy(() -> yamlMapAccessor.get("/foo/"))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -142,112 +133,120 @@ public class YamlMapAccessorTest {
         YamlMapAccessor yamlMapAccessor = createYamlMapAccessor("/YamlMapAccessorTest.yaml");
 
         Optional<Object> optional = yamlMapAccessor.get("/foo");
-        assertNotNull(optional);
-        assertFalse(optional.isPresent());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isFalse();
 
         optional = yamlMapAccessor.getOrCreate("/foo", LinkedHashMap::new);
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
 
-        try {
-            Map<Object, Object> map = (Map<Object, Object>) optional.get();
-            assertNotNull(map);
-            assertEquals(0, map.size());
-        } catch (ClassCastException e) {
-            fail("Expected Map<Object, Object>");
-        }
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
 
-        optional = yamlMapAccessor.get("/foo");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Map);
+        assertThat(optional).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
 
         Map<Object, Object> map = (Map<Object, Object>) optional.get();
+
+        assertThat(map).isNotNull();
+        assertThat(map.size()).isEqualTo(0);
+
+        optional = yamlMapAccessor.get("/foo");
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
+
+        map = (Map<Object, Object>) optional.get();
         map.put("value", 1);
 
         optional = yamlMapAccessor.get("/foo/value");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(1, ((Integer) optional.get()).intValue());
 
-        try {
-            yamlMapAccessor.getOrThrow(
-                    "/foo/value2", () -> new IllegalArgumentException("path doesn't exist"));
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            assertEquals("path doesn't exist", e.getMessage());
-        }
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Integer.class);
+        assertThat(optional.get()).isEqualTo(1);
 
-        yamlMapAccessor = YamlMapAccessor.empty();
+        assertThatThrownBy(
+                        () ->
+                                yamlMapAccessor.getOrThrow(
+                                        "/foo/value2",
+                                        () -> new IllegalArgumentException("path doesn't exist")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("path doesn't exist");
 
-        optional = yamlMapAccessor.getOrCreate("/foo/bar/value", () -> 1);
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(1, ((Integer) optional.get()).intValue());
+        YamlMapAccessor emptyYamlMapAccessor = YamlMapAccessor.empty();
 
-        optional = yamlMapAccessor.get("/foo/bar/value");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(1, ((Integer) optional.get()).intValue());
+        optional = emptyYamlMapAccessor.getOrCreate("/foo/bar/value", () -> 1);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Integer.class);
+        assertThat(optional.get()).isEqualTo(1);
     }
 
     @Test
     public void testEmpty() {
         YamlMapAccessor yamlMapAccessor = YamlMapAccessor.empty();
         Optional<Object> optional = yamlMapAccessor.get("/");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
+
         Map<Object, Object> map = (Map<Object, Object>) optional.get();
-        assertTrue(map.isEmpty());
+
+        assertThat(map).isEmpty();
 
         optional = yamlMapAccessor.getOrCreate("/foo", LinkedHashMap::new);
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
+
         map = (Map<Object, Object>) optional.get();
         map.put("value", 1);
 
         optional = yamlMapAccessor.get("/foo/value");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertNotNull(optional.get());
-        assertTrue(optional.get() instanceof Integer);
-        assertEquals(1, ((Integer) optional.get()).intValue());
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Integer.class);
+        assertThat(optional.get()).isEqualTo(1);
 
         optional = yamlMapAccessor.get("/foo");
-        assertNotNull(optional);
-        assertTrue(optional.isPresent());
-        assertTrue(optional.get() instanceof Map);
+
+        assertThat(optional).isNotNull();
+        assertThat(optional.isPresent()).isTrue();
+        assertThat(optional.get()).isNotNull();
+        assertThat(optional.get()).isInstanceOf(Map.class);
+
         map = (Map<Object, Object>) optional.get();
-        assertTrue(map.get("value") instanceof Integer);
-        assertEquals(1, (int) ((Integer) map.get("value")));
+
+        assertThat(map.get("value")).isInstanceOf(Integer.class);
+        assertThat((int) ((Integer) map.get("value"))).isEqualTo(1);
     }
 
     @Test
     public void testContainsPath() throws IOException {
         YamlMapAccessor yamlMapAccessor = createYamlMapAccessor("/YamlMapAccessorTest.yaml");
 
-        assertTrue(yamlMapAccessor.containsPath("/"));
+        assertThat(yamlMapAccessor.containsPath("/")).isTrue();
 
-        assertTrue(yamlMapAccessor.containsPath("/key"));
-        assertTrue(yamlMapAccessor.containsPath("/key/subkey"));
-        assertFalse(yamlMapAccessor.get("/key/subkey").isPresent());
+        assertThat(yamlMapAccessor.containsPath("/key")).isTrue();
+        assertThat(yamlMapAccessor.containsPath("/key/subkey")).isTrue();
+        assertThat(yamlMapAccessor.get("/key/subkey").isPresent()).isFalse();
 
-        assertTrue(yamlMapAccessor.containsPath("/key2"));
-        assertTrue(yamlMapAccessor.containsPath("/key2/subkey2"));
-        assertTrue(yamlMapAccessor.get("/key2/subkey2").isPresent());
+        assertThat(yamlMapAccessor.containsPath("/key2")).isTrue();
+        assertThat(yamlMapAccessor.containsPath("/key2/subkey2")).isTrue();
+        assertThat(yamlMapAccessor.get("/key2/subkey2").isPresent()).isTrue();
 
-        assertFalse(yamlMapAccessor.containsPath("/key/foo"));
+        assertThat(yamlMapAccessor.containsPath("/key/foo")).isFalse();
     }
 
     private static YamlMapAccessor createYamlMapAccessor(String resource) throws IOException {

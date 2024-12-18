@@ -16,9 +16,9 @@
 
 package io.prometheus.jmx.common.http.authenticator;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
 
@@ -41,9 +41,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -69,9 +71,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -97,9 +101,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -125,9 +131,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -153,9 +161,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -179,9 +189,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -207,9 +219,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -235,9 +249,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -263,9 +279,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -291,9 +309,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -314,9 +334,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -339,9 +361,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -364,9 +388,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -389,9 +415,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }
@@ -414,9 +442,11 @@ public class PBKDF2AuthenticatorTest extends BaseAuthenticatorTest {
             for (String password : TEST_PASSWORDS) {
                 boolean expectedIsAuthenticated =
                         VALID_USERNAME.equals(username) && VALID_PASSWORD.equals(password);
+
                 boolean actualIsAuthenticated =
                         PBKDF2Authenticator.checkCredentials(username, password);
-                assertEquals(expectedIsAuthenticated, actualIsAuthenticated);
+
+                assertThat(actualIsAuthenticated).isEqualTo(expectedIsAuthenticated);
             }
         }
     }

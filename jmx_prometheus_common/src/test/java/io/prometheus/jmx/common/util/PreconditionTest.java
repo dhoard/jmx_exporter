@@ -16,9 +16,9 @@
 
 package io.prometheus.jmx.common.util;
 
-import static org.junit.Assert.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PreconditionTest {
 
@@ -29,7 +29,8 @@ public class PreconditionTest {
 
     @Test
     public void testNotNull2() {
-        assertThrows(IllegalArgumentException.class, () -> Precondition.notNull(null));
+        assertThatThrownBy(() -> Precondition.notNull(null))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -44,22 +45,26 @@ public class PreconditionTest {
 
     @Test
     public void testNotNull1NotEmpty3() {
-        assertThrows(IllegalArgumentException.class, () -> Precondition.notNullOrEmpty(" "));
+        assertThatThrownBy(() -> Precondition.notNullOrEmpty(" "))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testNotNull1NotEmpty4() {
-        assertThrows(IllegalArgumentException.class, () -> Precondition.notNullOrEmpty("   "));
+        assertThatThrownBy(() -> Precondition.notNullOrEmpty("   "))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testNotNull1NotEmpty5() {
-        assertThrows(IllegalArgumentException.class, () -> Precondition.notNullOrEmpty("\t\r\n"));
+        assertThatThrownBy(() -> Precondition.notNullOrEmpty("\t\r\n"))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void testNotNull1NotEmpty6() {
-        assertThrows(IllegalArgumentException.class, () -> Precondition.notNullOrEmpty("\t"));
+        assertThatThrownBy(() -> Precondition.notNullOrEmpty("\t"))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -74,7 +79,7 @@ public class PreconditionTest {
 
     @Test
     public void testIsGreaterThanOrEqualTo3() {
-        assertThrows(
-                IllegalArgumentException.class, () -> Precondition.isGreaterThanOrEqualTo(0, 1));
+        assertThatThrownBy(() -> Precondition.isGreaterThanOrEqualTo(0, 1))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

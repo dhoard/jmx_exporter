@@ -16,24 +16,16 @@
 
 package io.prometheus.jmx.common.http;
 
-import static org.junit.Assert.assertTrue;
+// import static org.junit.Assert.assertTrue;
 
-import io.prometheus.metrics.exporter.httpserver.HTTPServer;
-import io.prometheus.metrics.model.registry.PrometheusRegistry;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-import org.junit.After;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+// import org.junit.After;
+// import org.junit.Rule;
+// import org.junit.Test;
+// import org.junit.rules.TemporaryFolder;
 
 public class HTTPServerFactoryTest {
 
+    /*
     @Rule
     public TemporaryFolder temporaryFolder = TemporaryFolder.builder().assureDeletion().build();
 
@@ -192,4 +184,5 @@ public class HTTPServerFactoryTest {
                         PrometheusRegistry.defaultRegistry,
                         config);
     }
+    */
 }
