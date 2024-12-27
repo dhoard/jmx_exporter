@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+/* TODO refactor to use JUnit 5 */
 @RunWith(Parameterized.class)
 public class SafeNameTest {
     @Parameterized.Parameters(name = "{index}: testSafeName(expected={0} actual={1}")

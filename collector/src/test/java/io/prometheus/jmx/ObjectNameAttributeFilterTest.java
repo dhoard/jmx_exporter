@@ -16,10 +16,6 @@
 
 package io.prometheus.jmx;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,9 +25,13 @@ import java.util.Map;
 import java.util.Set;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import org.yaml.snakeyaml.Yaml;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+/* TODO refactor to use JUnit 5 */
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ObjectNameAttributeFilterTest {
 
@@ -43,9 +43,9 @@ public class ObjectNameAttributeFilterTest {
     public void emptyConfig() throws Exception {
         ObjectNameAttributeFilter filter = initEmptyConfigFilter();
 
-        assertEquals(0, excludeMapSize(filter, CONFIG_EXCLUDE_MAP_FIELD));
-        assertEquals(0, excludeMapSize(filter, DYNAMIC_EXCLUDE_MAP_FIELD));
-        assertEquals(0, includeMapSize(filter));
+        assertThat(excludeMapSize(filter, CONFIG_EXCLUDE_MAP_FIELD)).isEqualTo(0);
+        assertThat(excludeMapSize(filter, DYNAMIC_EXCLUDE_MAP_FIELD)).isEqualTo(0);
+        assertThat(includeMapSize(filter)).isEqualTo(0);
     }
 
     @Test
@@ -59,14 +59,13 @@ public class ObjectNameAttributeFilterTest {
         Map<ObjectName, Set<String>> configIncludeMap =
                 getInternalMapValue(filter, CONFIG_INCLUDE_MAP_FIELD);
 
-        assertEquals(2, configExcludeMap.size());
-        assertEquals(
-                1, configExcludeMap.get(new ObjectName("java.lang:type=OperatingSystem")).size());
-        assertEquals(2, configExcludeMap.get(new ObjectName("java.lang:type=Runtime")).size());
-        assertEquals(0, dynamicMap.size());
-        assertEquals(2, configIncludeMap.size());
-        assertEquals(1, configIncludeMap.get(new ObjectName("java.lang:type=Threading")).size());
-        assertEquals(1, configIncludeMap.get(new ObjectName("java.lang:type=ClassLoading")).size());
+        assertThat(configExcludeMap.size()).isEqualTo(2);
+        assertThat(configExcludeMap.get(new ObjectName("java.lang:type=OperatingSystem")).size()).isEqualTo(1);
+        assertThat(configExcludeMap.get(new ObjectName("java.lang:type=Runtime")).size()).isEqualTo(2);
+        assertThat(dynamicMap.size()).isEqualTo(0);
+        assertThat(configIncludeMap.size()).isEqualTo(2);
+        assertThat(configIncludeMap.get(new ObjectName("java.lang:type=Threading")).size()).isEqualTo(1);
+        assertThat(configIncludeMap.get(new ObjectName("java.lang:type=ClassLoading")).size()).isEqualTo(1);
     }
 
     @Test
@@ -75,7 +74,7 @@ public class ObjectNameAttributeFilterTest {
 
         boolean result = filter.exclude(new ObjectName("java.lang:type=Runtime"), "ClassPath");
 
-        assertTrue("java.lang:type=Runtime<>ClassPath should be excluded by config", result);
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -85,7 +84,7 @@ public class ObjectNameAttributeFilterTest {
 
         boolean result = filter.exclude(new ObjectName("boolean:Type=Test"), "Value");
 
-        assertTrue("boolean:Type=Test<>Value should be excluded dynamically", result);
+        assertThat(result).isTrue();
     }
 
     @Test
@@ -104,7 +103,9 @@ public class ObjectNameAttributeFilterTest {
         ObjectName unregisteredObjectName = iterator.next();
         iterator.remove();
         filter.onlyKeepMBeans(aliveMBeans);
-        assertEquals("onlyKeepMBeans should shrink the map", size - 1, dynamicMap.size());
+
+        assertThat(dynamicMap.size()).isEqualTo(size - 1);
+
         for (ObjectName objectName : aliveMBeans) {
             assertTrue(
                     objectName

@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+/* TODO refactor to use JUnit 5 */
 @RunWith(Parameterized.class)
 public class SnakeCaseAttrTest {
     @Parameterized.Parameters(name = "{index}: testAttrToSnakeAndLowerCase(expected={0} actual={1}")
